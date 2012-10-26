@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!--[if lt IE 9]>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" class="lt-ie9">
+<![endif]-->
+<!--[if !IE]> -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!-- <![endif]-->
+
+<head>
+
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <title>Chosen</title>
+
+    <style type="text/css">
+        .b-wrapper { padding: 50px; float: left; }
+        .b-city { margin-right: 50px; }
+    </style>
+
+    <link rel="stylesheet" href="style.css" />
+
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src="src/sindel.js"></script>
+
+</head>
+
+<body>
+
+    <div class="b-wrapper">
+
+        <select class="b-city">
+
+            <option>Москва</option>
+            <option>Санкт-Петербург</option>
+            <option>Новосибирск</option>
+            <option selected>Екатеринбург</option>
+            <option>Нижний Новгород</option>
+            <option>Самара</option>
+            <option>Омск</option>
+            <option>Казань</option>
+            <option>Челябинск</option>
+            <option>Ростов-на-Дону</option>
+            <option>Уфа</option>
+            <option>Волгоград</option>
+            <option>Пермь</option>
+            <option>Красноярск</option>
+
+            <option>Воронеж</option>
+            <option>Саратов</option>
+            <option>Краснодар</option>
+            <option>Тольятти</option>
+            <option>Ижевск</option>
+            <option>Ульяновск</option>
+            <option>Барнаул</option>
+            <option>Владивосток</option>
+            <option>Ярославль</option>
+            <option>Иркутск</option>
+
+        </select>
+
+    </div>
+
+    <div class="b-wrapper">
+
+        <select class="b-city">
+
+            <option>Москва</option>
+            <option>Санкт-Петербург</option>
+            <option>Новосибирск</option>
+            <option>Екатеринбург</option>
+            <option>Нижний Новгород</option>
+            <option>Самара</option>
+            <option>Омск</option>
+            <option>Казань</option>
+            <option>Челябинск</option>
+            <option>Ростов-на-Дону</option>
+            <option>Уфа</option>
+            <option>Волгоград</option>
+            <option>Пермь</option>
+            <option>Красноярск</option>
+
+            <option>Воронеж</option>
+            <option>Саратов</option>
+            <option>Краснодар</option>
+            <option selected>Тольятти</option>
+            <option>Ижевск</option>
+            <option>Ульяновск</option>
+            <option>Барнаул</option>
+            <option>Владивосток</option>
+            <option>Ярославль</option>
+            <option>Иркутск</option>
+
+        </select>
+
+    </div>
+
+    <div class="b-wrapper">
+
+        <select class="b-city">
+
+            <option>Москва</option>
+            <option>Санкт-Петербург</option>
+            <option>Новосибирск</option>
+            <option>Екатеринбург</option>
+            <option>Нижний Новгород</option>
+            <option>Самара</option>
+            <option>Омск</option>
+            <option>Казань</option>
+            <option>Челябинск</option>
+            <option>Ростов-на-Дону</option>
+            <option>Уфа</option>
+            <option>Волгоград</option>
+            <option>Пермь</option>
+            <option>Красноярск</option>
+
+            <option>Воронеж</option>
+            <option>Саратов</option>
+            <option>Краснодар</option>
+            <option>Тольятти</option>
+            <option>Ижевск</option>
+            <option>Ульяновск</option>
+            <option>Барнаул</option>
+            <option>Владивосток</option>
+            <option>Ярославль</option>
+            <option>Иркутск</option>
+
+        </select>
+
+    </div>
+
+<script type="text/javascript">
+    $( document ).ready( function()
+    {
+        $( ".b-city" ).eq( 0 ).sindel( { majors_count: 4 } );
+        $( ".b-city" ).eq( 1 ).sindel( { majors_count: 4, search_limit: 5 } );
+        $( ".b-city" ).eq( 2 ).sindel( { minors_list_overflow: false } );
+
+        $( ".b-city" ).eq( 0 ).sindel();
+        $( ".b-city" ).eq( 1 ).sindel();
+        $( ".b-city" ).eq( 2 ).sindel();
+    });
+</script>
+
+</body>
+
+</html>
