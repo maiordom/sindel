@@ -1,4 +1,4 @@
-sindel
+sindel(select)
 ======
 
 Демо
