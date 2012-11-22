@@ -1,2 +1,2 @@
 RewriteEngine on
-RewriteRule sindel.js build.php
+RewriteRule js/sindel.js build.php

@@ -157,7 +157,7 @@
                 -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .6) inset;
                    -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, .6) inset;
                         box-shadow: 0 1px 1px rgba(0, 0, 0, .6) inset;
-            }
+                }
             .b-chosen__minors_overflow {
                 overflow-y: auto;
                 max-height: 136px;

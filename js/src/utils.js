@@ -1,5 +1,4 @@
-var Utils =
-{
+var Utils = {
     tmpl: '' +
     '<div class="b-chosen b-chosen_active">' +
         '<a href="javascript:void(0)" class="b-chosen__box" tabindex="1">' +
@@ -22,60 +21,45 @@ var Utils =
         '</div>' +
     '</div>',
 
-    doTmpl: function( tmpl )
-    {
+    doTmpl: function( tmpl ) {
         var div = document.createElement( "div" );
-
         div.innerHTML = tmpl;
-
         return $( div.firstChild );
     },
 
-
-    forEach: function( obj, callback )
-    {
+    forEach: function( obj, callback ) {
         for ( var i = 0, ilen = obj.length; i < ilen; i++ )
-        {
             if ( callback.call( obj[ i ], obj[ i ], i ) === false ) { break; }
-        }
     },
 
-    each: function( obj, callback )
-    {
+    each: function( obj, callback ) {
         for ( var i = 0, ilen = obj.length; i < ilen; i++ )
-        {
             if ( callback.call( obj.eq( i ), obj.eq( i ), i ) === false ) { break; }
-        }
     },
 
-    toArray: function( node_list )
-    {
+    toArray: function( node_list ) {
         var arr = [];
 
-        Utils.forEach( node_list, function( item, index )
-        {
+        Utils.forEach( node_list, function( item, index ) {
             arr.push( item );
         });
 
         return arr;
     },
 
-    cacheObjects: function( el )
-    {
+    cacheObjects: function( el ) {
         var select_ctx = el,
             chosen_ctx = Utils.doTmpl( Utils.tmpl ),
             options    = Utils.toArray( select_ctx.get( 0 ).getElementsByTagName( "OPTION" ) ),
             index      = select_ctx.get( 0 ).selectedIndex;
 
-        var select =
-        {
+        var select = {
             ctx:      select_ctx,
             options:  options,
             selected: $( options[ index >= 0 ? index : 0 ] )
         };
 
-        var chosen =
-        {
+        var chosen = {
             ctx:          chosen_ctx,
             search:       chosen_ctx.find( ".b-chosen__search" ),
             box:          chosen_ctx.find( ".b-chosen__box" ),
@@ -95,12 +79,10 @@ var Utils =
         return { select: select, chosen: chosen };
     },
 
-    getListTmp: function( list, offset )
-    {
+    getListTmp: function( list, offset ) {
         var tmp = "";
 
-        Utils.forEach( list, function( item, index )
-        {
+        Utils.forEach( list, function( item, index ) {
             tmp += "<li class='b-chosen__item b-hidden' data-original-index='" + offset +"' data-index='" + offset + "'>" + item.innerHTML + "</li>";
             offset++;
         });
@@ -108,10 +90,8 @@ var Utils =
         return tmp;
     },
 
-    setParams: function( settings )
-    {
-        var params =
-        {
+    setParams: function( settings ) {
+        var params = {
             majors_count: 0,
             minors_list_overflow: true,
             search_limit: null

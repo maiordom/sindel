@@ -1,15 +1,13 @@
 <?php
-$lib_path = "src/";
-$lib_name = "src/" . "sindel.js";
+$lib_path = "js/src/";
+$lib_name = "js/" . "sindel.js";
 
 createBundle( Array( "utils.js", "widget.js" ), $lib_path, $lib_name );
 
-function createBundle( $files, $path, $bundle )
-{
+function createBundle( $files, $path, $bundle ) {
     $file_str = "";
 
-    for ( $i = 0, $ilen = count( $files ); $i < $ilen; $i++ )
-    {
+    for ( $i = 0, $ilen = count( $files ); $i < $ilen; $i++ ) {
         $file_str .= file_get_contents( $path . $files[ $i ]  ) . "\r\n\r\n";
     }
 
@@ -26,4 +24,4 @@ $URI = $_SERVER[ "REQUEST_URI" ];
 
 header( "HTTP/1.0 200 OK" );
 header( "Content-Type: application/javascript" );
-echo readfile( "src/sindel.js" );
+echo file_get_contents( $lib_name );
