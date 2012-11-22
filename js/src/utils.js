@@ -1,22 +1,22 @@
 var Utils = {
     tmpl: '' +
-    '<div class="b-chosen b-chosen_active">' +
-        '<a href="javascript:void(0)" class="b-chosen__box" tabindex="1">' +
-            '<div class="b-chosen__current-text"></div>' +
-            '<div class="b-chosen__arrow-wrapper">' +
-                '<div class="b-chosen__arrow"></div>' +
+    '<div class="sindel sindel_active">' +
+        '<a href="javascript:void(0)" class="sindel__box" tabindex="1">' +
+            '<div class="sindel__current-text"></div>' +
+            '<div class="sindel__arrow-wrapper">' +
+                '<div class="sindel__arrow"></div>' +
             '</div>' +
         '</a>' +
-        '<div class="b-chosen__drop">' +
-            '<div class="b-chosen__drop-inner">' +
-                '<ul class="b-chosen__majors"></ul>' +
-                '<input class="b-chosen__search" type="text" tabindex="-1" />' +
-                '<ul class="b-chosen__minors"></ul>' +
+        '<div class="sindel__drop">' +
+            '<div class="sindel__drop-inner">' +
+                '<ul class="sindel__majors"></ul>' +
+                '<input class="sindel__search" type="text" tabindex="-1" />' +
+                '<ul class="sindel__minors"></ul>' +
             '</div>' +
-            '<div class="b-chosen__shadow">' +
-                '<div class="b-chosen__corner b-chosen__corner_left"></div>' +
-                '<div class="b-chosen__corner b-chosen__corner_right"></div>' +
-                '<div class="b-chosen__corner b-chosen__shadow-bck "></div>' +
+            '<div class="sindel__shadow">' +
+                '<div class="sindel__corner sindel__corner_left"></div>' +
+                '<div class="sindel__corner sindel__corner_right"></div>' +
+                '<div class="sindel__corner sindel__shadow-bck "></div>' +
             '</div>' +
         '</div>' +
     '</div>',
@@ -61,12 +61,12 @@ var Utils = {
 
         var chosen = {
             ctx:          chosen_ctx,
-            search:       chosen_ctx.find( ".b-chosen__search" ),
-            box:          chosen_ctx.find( ".b-chosen__box" ),
-            drop:         chosen_ctx.find( ".b-chosen__drop" ),
-            current_text: chosen_ctx.find( ".b-chosen__current-text" ),
-            majors_list:  chosen_ctx.find( ".b-chosen__majors" ),
-            minors_list:  chosen_ctx.find( ".b-chosen__minors" ),
+            search:       chosen_ctx.find( ".sindel__search" ),
+            box:          chosen_ctx.find( ".sindel__box" ),
+            drop:         chosen_ctx.find( ".sindel__drop" ),
+            current_text: chosen_ctx.find( ".sindel__current-text" ),
+            majors_list:  chosen_ctx.find( ".sindel__majors" ),
+            minors_list:  chosen_ctx.find( ".sindel__minors" ),
             new_items:    $(),
             matches:      $(),
             items:        $(),
@@ -83,7 +83,7 @@ var Utils = {
         var tmp = "";
 
         Utils.forEach( list, function( item, index ) {
-            tmp += "<li class='b-chosen__item b-hidden' data-original-index='" + offset +"' data-index='" + offset + "'>" + item.innerHTML + "</li>";
+            tmp += "<li class='sindel__item b-hidden' data-original-index='" + offset +"' data-index='" + offset + "'>" + item.innerHTML + "</li>";
             offset++;
         });
 

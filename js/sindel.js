@@ -2,23 +2,23 @@
 {
 var Utils = {
     tmpl: '' +
-    '<div class="b-chosen b-chosen_active">' +
-        '<a href="javascript:void(0)" class="b-chosen__box" tabindex="1">' +
-            '<div class="b-chosen__current-text"></div>' +
-            '<div class="b-chosen__arrow-wrapper">' +
-                '<div class="b-chosen__arrow"></div>' +
+    '<div class="sindel sindel_active">' +
+        '<a href="javascript:void(0)" class="sindel__box" tabindex="1">' +
+            '<div class="sindel__current-text"></div>' +
+            '<div class="sindel__arrow-wrapper">' +
+                '<div class="sindel__arrow"></div>' +
             '</div>' +
         '</a>' +
-        '<div class="b-chosen__drop">' +
-            '<div class="b-chosen__drop-inner">' +
-                '<ul class="b-chosen__majors"></ul>' +
-                '<input class="b-chosen__search" type="text" tabindex="-1" />' +
-                '<ul class="b-chosen__minors"></ul>' +
+        '<div class="sindel__drop">' +
+            '<div class="sindel__drop-inner">' +
+                '<ul class="sindel__majors"></ul>' +
+                '<input class="sindel__search" type="text" tabindex="-1" />' +
+                '<ul class="sindel__minors"></ul>' +
             '</div>' +
-            '<div class="b-chosen__shadow">' +
-                '<div class="b-chosen__corner b-chosen__corner_left"></div>' +
-                '<div class="b-chosen__corner b-chosen__corner_right"></div>' +
-                '<div class="b-chosen__corner b-chosen__shadow-bck "></div>' +
+            '<div class="sindel__shadow">' +
+                '<div class="sindel__corner sindel__corner_left"></div>' +
+                '<div class="sindel__corner sindel__corner_right"></div>' +
+                '<div class="sindel__corner sindel__shadow-bck "></div>' +
             '</div>' +
         '</div>' +
     '</div>',
@@ -63,12 +63,12 @@ var Utils = {
 
         var chosen = {
             ctx:          chosen_ctx,
-            search:       chosen_ctx.find( ".b-chosen__search" ),
-            box:          chosen_ctx.find( ".b-chosen__box" ),
-            drop:         chosen_ctx.find( ".b-chosen__drop" ),
-            current_text: chosen_ctx.find( ".b-chosen__current-text" ),
-            majors_list:  chosen_ctx.find( ".b-chosen__majors" ),
-            minors_list:  chosen_ctx.find( ".b-chosen__minors" ),
+            search:       chosen_ctx.find( ".sindel__search" ),
+            box:          chosen_ctx.find( ".sindel__box" ),
+            drop:         chosen_ctx.find( ".sindel__drop" ),
+            current_text: chosen_ctx.find( ".sindel__current-text" ),
+            majors_list:  chosen_ctx.find( ".sindel__majors" ),
+            minors_list:  chosen_ctx.find( ".sindel__minors" ),
             new_items:    $(),
             matches:      $(),
             items:        $(),
@@ -85,7 +85,7 @@ var Utils = {
         var tmp = "";
 
         Utils.forEach( list, function( item, index ) {
-            tmp += "<li class='b-chosen__item b-hidden' data-original-index='" + offset +"' data-index='" + offset + "'>" + item.innerHTML + "</li>";
+            tmp += "<li class='sindel__item b-hidden' data-original-index='" + offset +"' data-index='" + offset + "'>" + item.innerHTML + "</li>";
             offset++;
         });
 
@@ -131,7 +131,7 @@ var Widget = function( el, settings ) {
         chosen.majors_list.html( Utils.getListTmp( data.majors, 0 ) );
         chosen.minors_list.html( Utils.getListTmp( data.minors, data.majors.length ) );
 
-        chosen.items = chosen.ctx.find( ".b-chosen__item" );
+        chosen.items = chosen.ctx.find( ".sindel__item" );
 
         chosen.box.attr( "tabindex", select.ctx.attr( "tabindex" ) );
         select.ctx.attr( "tabindex", -1 );
@@ -141,7 +141,7 @@ var Widget = function( el, settings ) {
         select.ctx.addClass( "b-hidden" );
 
         if ( params.minors_list_overflow ) {
-            chosen.minors_list.addClass( "b-chosen__minors_overflow" );
+            chosen.minors_list.addClass( "sindel__minors_overflow" );
         }
 
         if ( !params.search_limit ) {
@@ -189,7 +189,7 @@ var Widget = function( el, settings ) {
     }
 
     function onBoxFocus() {
-        chosen.ctx.addClass( "b-chosen_focus" );
+        chosen.ctx.addClass( "sindel_focus" );
         chosen.search.focus();
     }
 
@@ -205,7 +205,7 @@ var Widget = function( el, settings ) {
     function onSearchKeydown( e ) {
         if ( ~[ 27, 38, 40, 13 ].indexOf( e.keyCode ) ) {
             if ( !is_open ) {
-                chosen.ctx.removeClass( "b-chosen_focus" );
+                chosen.ctx.removeClass( "sindel_focus" );
                 openWidget();
                 return;
             }
@@ -231,13 +231,13 @@ var Widget = function( el, settings ) {
 
     function onBoxMousedown( e ) {
         doc.unbind( "click.chosen" );
-        chosen.ctx.removeClass( "b-chosen_focus" );
+        chosen.ctx.removeClass( "sindel_focus" );
         displayDrop();
 
         doc.click( function( e ) {
             if ( is_mouseleave ) {
                 doc.unbind( "click.chosen" );
-                chosen.ctx.removeClass( "b-chosen_focus" );
+                chosen.ctx.removeClass( "sindel_focus" );
                 closeWidget();
             }
         });
@@ -250,14 +250,14 @@ var Widget = function( el, settings ) {
             closeWidget();
         }
 
-        chosen.ctx.removeClass( "b-chosen_focus" );
+        chosen.ctx.removeClass( "sindel_focus" );
     }
 
     function onItemClick( e ) {
         var item = $( e.target );
 
-        if ( item.hasClass( "b-chosen__item" ) ) {
-            chosen.ctx.addClass( "b-chosen_focus" );
+        if ( item.hasClass( "sindel__item" ) ) {
+            chosen.ctx.addClass( "sindel_focus" );
             selectItem( item );
             closeWidget();
         }
@@ -266,19 +266,19 @@ var Widget = function( el, settings ) {
     function onItemMouseover( e ) {
         var item = $( e.target );
 
-        if ( !item.hasClass( "b-chosen__item" ) || item.hasClass( "b-hidden" ) ) {
+        if ( !item.hasClass( "sindel__item" ) || item.hasClass( "b-hidden" ) ) {
             return false;
         }
 
-        if ( !item.hasClass( "b-chosen__item_active" ) ) {
+        if ( !item.hasClass( "sindel__item_active" ) ) {
             unselect();
             chosen.hovered = item;
-            item.addClass( "b-chosen__item_active" );
+            item.addClass( "sindel__item_active" );
         }
     }
 
     function onItemMouseout( e ) {
-        if ( $( e.target ).hasClass( "b-chosen__item_active" ) ) {
+        if ( $( e.target ).hasClass( "sindel__item_active" ) ) {
             unselect();
         }
     }
@@ -296,13 +296,13 @@ var Widget = function( el, settings ) {
     }
 
     function unselect() {
-        chosen.selected.removeClass( "b-chosen__item_active" );
-        chosen.hovered.removeClass( "b-chosen__item_active" );
+        chosen.selected.removeClass( "sindel__item_active" );
+        chosen.hovered.removeClass( "sindel__item_active" );
     }
 
     function getCurrentItem() {
-        return chosen.hovered.hasClass( "b-chosen__item_active" )  ? chosen.hovered  :
-               chosen.selected.hasClass( "b-chosen__item_active" ) ? chosen.selected : null;
+        return chosen.hovered.hasClass( "sindel__item_active" )  ? chosen.hovered  :
+               chosen.selected.hasClass( "sindel__item_active" ) ? chosen.selected : null;
     }
 
     function selectItemByInter() {
@@ -329,11 +329,11 @@ var Widget = function( el, settings ) {
         unselect();
 
         if ( new_index <= -1 ) {
-            item = chosen.new_items.eq( length - 1 ).addClass( "b-chosen__item_active" );
+            item = chosen.new_items.eq( length - 1 ).addClass( "sindel__item_active" );
         } else if ( new_index <= length - 1 ) {
-            item = chosen.new_items.eq( new_index ).addClass( "b-chosen__item_active" );
+            item = chosen.new_items.eq( new_index ).addClass( "sindel__item_active" );
         } else if ( new_index >= length ) {
-            item = chosen.new_items.eq( 0 ).addClass( "b-chosen__item_active" );
+            item = chosen.new_items.eq( 0 ).addClass( "sindel__item_active" );
         }
 
         scrollTo( item.get( 0 ) );
@@ -396,24 +396,24 @@ var Widget = function( el, settings ) {
 
     function openWidget() {
         is_open = true;
-        chosen.ctx.removeClass( "b-chosen_focus" ).addClass( "b-chosen_active" );
+        chosen.ctx.removeClass( "sindel_focus" ).addClass( "sindel_active" );
         showItems();
         chosen.search.val( "" );
         chosen.search.focus();
-        chosen.hovered.removeClass( "b-chosen__item_active" );
+        chosen.hovered.removeClass( "sindel__item_active" );
         chosen.selected = chosen.selected.hasClass( "b-hidden" ) ? chosen.items.eq( 0 ) : chosen.selected;
-        chosen.selected.addClass( "b-chosen__item_active" );
+        chosen.selected.addClass( "sindel__item_active" );
         scrollTo( chosen.selected.get( 0 ) );
     }
 
     function closeWidget() {
         is_open = false;
-        chosen.ctx.removeClass( "b-chosen_active" );
+        chosen.ctx.removeClass( "sindel_active" );
     }
 
     function selectItem( item ) {
         unselect();
-        chosen.selected = item.addClass( "b-chosen__item_active" );
+        chosen.selected = item.addClass( "sindel__item_active" );
         chosen.current_text.html( chosen.selected.html() );
         select.ctx.get( 0 ).selectedIndex = parseInt( chosen.selected.attr( "data-original-index" ), 10 );
     }

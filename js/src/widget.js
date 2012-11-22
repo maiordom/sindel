@@ -26,7 +26,7 @@ var Widget = function( el, settings ) {
         chosen.majors_list.html( Utils.getListTmp( data.majors, 0 ) );
         chosen.minors_list.html( Utils.getListTmp( data.minors, data.majors.length ) );
 
-        chosen.items = chosen.ctx.find( ".b-chosen__item" );
+        chosen.items = chosen.ctx.find( ".sindel__item" );
 
         chosen.box.attr( "tabindex", select.ctx.attr( "tabindex" ) );
         select.ctx.attr( "tabindex", -1 );
@@ -36,7 +36,7 @@ var Widget = function( el, settings ) {
         select.ctx.addClass( "b-hidden" );
 
         if ( params.minors_list_overflow ) {
-            chosen.minors_list.addClass( "b-chosen__minors_overflow" );
+            chosen.minors_list.addClass( "sindel__minors_overflow" );
         }
 
         if ( !params.search_limit ) {
@@ -84,7 +84,7 @@ var Widget = function( el, settings ) {
     }
 
     function onBoxFocus() {
-        chosen.ctx.addClass( "b-chosen_focus" );
+        chosen.ctx.addClass( "sindel_focus" );
         chosen.search.focus();
     }
 
@@ -100,7 +100,7 @@ var Widget = function( el, settings ) {
     function onSearchKeydown( e ) {
         if ( ~[ 27, 38, 40, 13 ].indexOf( e.keyCode ) ) {
             if ( !is_open ) {
-                chosen.ctx.removeClass( "b-chosen_focus" );
+                chosen.ctx.removeClass( "sindel_focus" );
                 openWidget();
                 return;
             }
@@ -126,13 +126,13 @@ var Widget = function( el, settings ) {
 
     function onBoxMousedown( e ) {
         doc.unbind( "click.chosen" );
-        chosen.ctx.removeClass( "b-chosen_focus" );
+        chosen.ctx.removeClass( "sindel_focus" );
         displayDrop();
 
         doc.click( function( e ) {
             if ( is_mouseleave ) {
                 doc.unbind( "click.chosen" );
-                chosen.ctx.removeClass( "b-chosen_focus" );
+                chosen.ctx.removeClass( "sindel_focus" );
                 closeWidget();
             }
         });
@@ -145,14 +145,14 @@ var Widget = function( el, settings ) {
             closeWidget();
         }
 
-        chosen.ctx.removeClass( "b-chosen_focus" );
+        chosen.ctx.removeClass( "sindel_focus" );
     }
 
     function onItemClick( e ) {
         var item = $( e.target );
 
-        if ( item.hasClass( "b-chosen__item" ) ) {
-            chosen.ctx.addClass( "b-chosen_focus" );
+        if ( item.hasClass( "sindel__item" ) ) {
+            chosen.ctx.addClass( "sindel_focus" );
             selectItem( item );
             closeWidget();
         }
@@ -161,19 +161,19 @@ var Widget = function( el, settings ) {
     function onItemMouseover( e ) {
         var item = $( e.target );
 
-        if ( !item.hasClass( "b-chosen__item" ) || item.hasClass( "b-hidden" ) ) {
+        if ( !item.hasClass( "sindel__item" ) || item.hasClass( "b-hidden" ) ) {
             return false;
         }
 
-        if ( !item.hasClass( "b-chosen__item_active" ) ) {
+        if ( !item.hasClass( "sindel__item_active" ) ) {
             unselect();
             chosen.hovered = item;
-            item.addClass( "b-chosen__item_active" );
+            item.addClass( "sindel__item_active" );
         }
     }
 
     function onItemMouseout( e ) {
-        if ( $( e.target ).hasClass( "b-chosen__item_active" ) ) {
+        if ( $( e.target ).hasClass( "sindel__item_active" ) ) {
             unselect();
         }
     }
@@ -191,13 +191,13 @@ var Widget = function( el, settings ) {
     }
 
     function unselect() {
-        chosen.selected.removeClass( "b-chosen__item_active" );
-        chosen.hovered.removeClass( "b-chosen__item_active" );
+        chosen.selected.removeClass( "sindel__item_active" );
+        chosen.hovered.removeClass( "sindel__item_active" );
     }
 
     function getCurrentItem() {
-        return chosen.hovered.hasClass( "b-chosen__item_active" )  ? chosen.hovered  :
-               chosen.selected.hasClass( "b-chosen__item_active" ) ? chosen.selected : null;
+        return chosen.hovered.hasClass( "sindel__item_active" )  ? chosen.hovered  :
+               chosen.selected.hasClass( "sindel__item_active" ) ? chosen.selected : null;
     }
 
     function selectItemByInter() {
@@ -224,11 +224,11 @@ var Widget = function( el, settings ) {
         unselect();
 
         if ( new_index <= -1 ) {
-            item = chosen.new_items.eq( length - 1 ).addClass( "b-chosen__item_active" );
+            item = chosen.new_items.eq( length - 1 ).addClass( "sindel__item_active" );
         } else if ( new_index <= length - 1 ) {
-            item = chosen.new_items.eq( new_index ).addClass( "b-chosen__item_active" );
+            item = chosen.new_items.eq( new_index ).addClass( "sindel__item_active" );
         } else if ( new_index >= length ) {
-            item = chosen.new_items.eq( 0 ).addClass( "b-chosen__item_active" );
+            item = chosen.new_items.eq( 0 ).addClass( "sindel__item_active" );
         }
 
         scrollTo( item.get( 0 ) );
@@ -291,24 +291,24 @@ var Widget = function( el, settings ) {
 
     function openWidget() {
         is_open = true;
-        chosen.ctx.removeClass( "b-chosen_focus" ).addClass( "b-chosen_active" );
+        chosen.ctx.removeClass( "sindel_focus" ).addClass( "sindel_active" );
         showItems();
         chosen.search.val( "" );
         chosen.search.focus();
-        chosen.hovered.removeClass( "b-chosen__item_active" );
+        chosen.hovered.removeClass( "sindel__item_active" );
         chosen.selected = chosen.selected.hasClass( "b-hidden" ) ? chosen.items.eq( 0 ) : chosen.selected;
-        chosen.selected.addClass( "b-chosen__item_active" );
+        chosen.selected.addClass( "sindel__item_active" );
         scrollTo( chosen.selected.get( 0 ) );
     }
 
     function closeWidget() {
         is_open = false;
-        chosen.ctx.removeClass( "b-chosen_active" );
+        chosen.ctx.removeClass( "sindel_active" );
     }
 
     function selectItem( item ) {
         unselect();
-        chosen.selected = item.addClass( "b-chosen__item_active" );
+        chosen.selected = item.addClass( "sindel__item_active" );
         chosen.current_text.html( chosen.selected.html() );
         select.ctx.get( 0 ).selectedIndex = parseInt( chosen.selected.attr( "data-original-index" ), 10 );
     }
