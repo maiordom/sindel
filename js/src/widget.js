@@ -94,7 +94,7 @@ var Widget = function( el, settings ) {
 
     function onCtxMouseleave( e ) {
         is_mouseleave = true;
-        chosen.search.focus();
+        is_open ? chosen.search.focus() : null;
     }
 
     function onSearchKeydown( e ) {

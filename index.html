@@ -14,11 +14,11 @@
     <title>Sindel - Select</title>
 
     <style type="text/css">
-        .b-wrapper { padding: 50px; float: left; }
-        .b-city { margin-right: 50px; }
+        .wrapper { padding: 50px; float: left; }
+        .city { margin-right: 50px; }
     </style>
 
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="sindel.css" />
 
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
     <script type="text/javascript" src="js/sindel.js"></script>
@@ -27,9 +27,9 @@
 
 <body>
 
-    <div class="b-wrapper">
+    <div class="wrapper">
 
-        <select class="b-city">
+        <select class="city">
 
             <option>Москва</option>
             <option>Санкт-Петербург</option>
@@ -61,9 +61,9 @@
 
     </div>
 
-    <div class="b-wrapper">
+    <div class="wrapper">
 
-        <select class="b-city">
+        <select class="city">
 
             <option>Москва</option>
             <option>Санкт-Петербург</option>
@@ -95,9 +95,9 @@
 
     </div>
 
-    <div class="b-wrapper">
+    <div class="wrapper">
 
-        <select class="b-city">
+        <select class="city">
 
             <option>Москва</option>
             <option>Санкт-Петербург</option>
@@ -131,13 +131,15 @@
 
 <script type="text/javascript">
     $( document ).ready( function() {
-        $( ".b-city" ).eq( 0 ).sindel( { majors_count: 4 } );
-        $( ".b-city" ).eq( 1 ).sindel( { majors_count: 4, search_limit: 5 } );
-        $( ".b-city" ).eq( 2 ).sindel( { minors_list_overflow: false } );
+        var city = $( ".city" );
 
-        $( ".b-city" ).eq( 0 ).sindel();
-        $( ".b-city" ).eq( 1 ).sindel();
-        $( ".b-city" ).eq( 2 ).sindel();
+        city.eq( 0 ).sindel( { majors_count: 0 } );
+        city.eq( 1 ).sindel( { majors_count: 4, search_limit: 5 } );
+        city.eq( 2 ).sindel( { minors_list_overflow: false } );
+
+        city.eq( 0 ).sindel();
+        city.eq( 1 ).sindel();
+        city.eq( 2 ).sindel();
     });
 </script>
 
