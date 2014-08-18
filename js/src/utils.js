@@ -37,10 +37,10 @@ var Utils = {
             if ( callback.call( obj.eq( i ), obj.eq( i ), i ) === false ) { break; }
     },
 
-    toArray: function( node_list ) {
+    toArray: function( nodeList ) {
         var arr = [];
 
-        Utils.forEach( node_list, function( item, index ) {
+        Utils.forEach( nodeList, function( item, index ) {
             arr.push( item );
         });
 
@@ -48,33 +48,33 @@ var Utils = {
     },
 
     cacheObjects: function( el ) {
-        var select_ctx = el,
-            chosen_ctx = Utils.doTmpl( Utils.tmpl ),
-            options    = Utils.toArray( select_ctx.get( 0 ).getElementsByTagName( "OPTION" ) ),
-            index      = select_ctx.get( 0 ).selectedIndex;
+        var selectCtx = el,
+            chosenCtx = Utils.doTmpl( Utils.tmpl ),
+            options   = Utils.toArray( selectCtx.get( 0 ).getElementsByTagName( "OPTION" ) ),
+            index     = selectCtx.get( 0 ).selectedIndex;
 
         var select = {
-            ctx:      select_ctx,
+            ctx:      selectCtx,
             options:  options,
             selected: $( options[ index >= 0 ? index : 0 ] )
         };
 
         var chosen = {
-            ctx:          chosen_ctx,
-            search:       chosen_ctx.find( ".sindel__search" ),
-            box:          chosen_ctx.find( ".sindel__box" ),
-            drop:         chosen_ctx.find( ".sindel__drop" ),
-            current_text: chosen_ctx.find( ".sindel__current-text" ),
-            majors_list:  chosen_ctx.find( ".sindel__majors" ),
-            minors_list:  chosen_ctx.find( ".sindel__minors" ),
-            new_items:    $(),
-            matches:      $(),
-            items:        $(),
-            selected:     $(),
-            hovered:      $()
+            ctx:         chosenCtx,
+            search:      chosenCtx.find( ".sindel__search" ),
+            box:         chosenCtx.find( ".sindel__box" ),
+            drop:        chosenCtx.find( ".sindel__drop" ),
+            currentText: chosenCtx.find( ".sindel__current-text" ),
+            majorsList:  chosenCtx.find( ".sindel__majors" ),
+            minorsList:  chosenCtx.find( ".sindel__minors" ),
+            new_items:   $(),
+            matches:     $(),
+            items:       $(),
+            selected:    $(),
+            hovered:     $()
         };
 
-        chosen_ctx.insertBefore( select_ctx[ 0 ] );
+        chosenCtx.insertBefore( selectCtx[ 0 ] );
 
         return { select: select, chosen: chosen };
     },
@@ -92,9 +92,9 @@ var Utils = {
 
     setParams: function( settings ) {
         var params = {
-            majors_count: 0,
-            minors_list_overflow: true,
-            search_limit: null
+            majorsCount: 0,
+            minorsListOverflow: true,
+            searchLimit: null
         };
 
         return $.extend( params, settings );

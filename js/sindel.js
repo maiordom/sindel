@@ -39,10 +39,10 @@ var Utils = {
             if ( callback.call( obj.eq( i ), obj.eq( i ), i ) === false ) { break; }
     },
 
-    toArray: function( node_list ) {
+    toArray: function( nodeList ) {
         var arr = [];
 
-        Utils.forEach( node_list, function( item, index ) {
+        Utils.forEach( nodeList, function( item, index ) {
             arr.push( item );
         });
 
@@ -50,33 +50,33 @@ var Utils = {
     },
 
     cacheObjects: function( el ) {
-        var select_ctx = el,
-            chosen_ctx = Utils.doTmpl( Utils.tmpl ),
-            options    = Utils.toArray( select_ctx.get( 0 ).getElementsByTagName( "OPTION" ) ),
-            index      = select_ctx.get( 0 ).selectedIndex;
+        var selectCtx = el,
+            chosenCtx = Utils.doTmpl( Utils.tmpl ),
+            options   = Utils.toArray( selectCtx.get( 0 ).getElementsByTagName( "OPTION" ) ),
+            index     = selectCtx.get( 0 ).selectedIndex;
 
         var select = {
-            ctx:      select_ctx,
+            ctx:      selectCtx,
             options:  options,
             selected: $( options[ index >= 0 ? index : 0 ] )
         };
 
         var chosen = {
-            ctx:          chosen_ctx,
-            search:       chosen_ctx.find( ".sindel__search" ),
-            box:          chosen_ctx.find( ".sindel__box" ),
-            drop:         chosen_ctx.find( ".sindel__drop" ),
-            current_text: chosen_ctx.find( ".sindel__current-text" ),
-            majors_list:  chosen_ctx.find( ".sindel__majors" ),
-            minors_list:  chosen_ctx.find( ".sindel__minors" ),
-            new_items:    $(),
-            matches:      $(),
-            items:        $(),
-            selected:     $(),
-            hovered:      $()
+            ctx:         chosenCtx,
+            search:      chosenCtx.find( ".sindel__search" ),
+            box:         chosenCtx.find( ".sindel__box" ),
+            drop:        chosenCtx.find( ".sindel__drop" ),
+            currentText: chosenCtx.find( ".sindel__current-text" ),
+            majorsList:  chosenCtx.find( ".sindel__majors" ),
+            minorsList:  chosenCtx.find( ".sindel__minors" ),
+            new_items:   $(),
+            matches:     $(),
+            items:       $(),
+            selected:    $(),
+            hovered:     $()
         };
 
-        chosen_ctx.insertBefore( select_ctx[ 0 ] );
+        chosenCtx.insertBefore( selectCtx[ 0 ] );
 
         return { select: select, chosen: chosen };
     },
@@ -94,9 +94,9 @@ var Utils = {
 
     setParams: function( settings ) {
         var params = {
-            majors_count: 0,
-            minors_list_overflow: true,
-            search_limit: null
+            majorsCount: 0,
+            minorsListOverflow: true,
+            searchLimit: null
         };
 
         return $.extend( params, settings );
@@ -128,15 +128,15 @@ var Widget = function( el, settings ) {
         },
 
         replaceItems: function() {
-            var majors = select.options.slice( 0, params.majors_count ),
-                minors = select.options.slice( params.majors_count );
+            var majors = select.options.slice( 0, params.majorsCount ),
+                minors = select.options.slice( params.majorsCount );
 
             return { majors: majors, minors: minors };
         },
 
         render: function( data ) {
-            chosen.majors_list.html( Utils.getListTmp( data.majors, 0 ) );
-            chosen.minors_list.html( Utils.getListTmp( data.minors, data.majors.length ) );
+            chosen.majorsList.html( Utils.getListTmp( data.majors, 0 ) );
+            chosen.minorsList.html( Utils.getListTmp( data.minors, data.majors.length ) );
 
             chosen.items = chosen.ctx.find( ".sindel__item" );
 
@@ -147,12 +147,12 @@ var Widget = function( el, settings ) {
             chosen.ctx.css( { width: select.ctx.outerWidth() + "px" } );
             select.ctx.addClass( "b-hidden" );
 
-            if ( params.minors_list_overflow ) {
-                chosen.minors_list.addClass( "sindel__minors_overflow" );
+            if ( params.minorsListOverflow ) {
+                chosen.minorsList.addClass( "sindel__minors_overflow" );
             }
 
-            if ( !params.search_limit ) {
-                params.search_limit = data.minors.length;
+            if ( !params.searchLimit ) {
+                params.searchLimit = data.minors.length;
             }
         },
 
@@ -291,7 +291,7 @@ var Widget = function( el, settings ) {
         },
 
         findAndSelectMatches: function() {
-            chosen.minors_list.get( 0 ).scrollTop = 0;
+            chosen.minorsList.get( 0 ).scrollTop = 0;
 
             chosen.search.val() ? f.findSearchMatches() : f.showItems();
 
@@ -331,16 +331,16 @@ var Widget = function( el, settings ) {
         navigate: function( offset ) {
             var index     = f.getIndex(),
                 new_index = index + offset,
-                length    = chosen.new_items.length, item;
+                length    = chosen.newItems.length, item;
 
             f.unselect();
 
             if ( new_index <= -1 ) {
-                item = chosen.new_items.eq( length - 1 ).addClass( "sindel__item_active" );
+                item = chosen.newItems.eq( length - 1 ).addClass( "sindel__item_active" );
             } else if ( new_index <= length - 1 ) {
-                item = chosen.new_items.eq( new_index ).addClass( "sindel__item_active" );
+                item = chosen.newItems.eq( new_index ).addClass( "sindel__item_active" );
             } else if ( new_index >= length ) {
-                item = chosen.new_items.eq( 0 ).addClass( "sindel__item_active" );
+                item = chosen.newItems.eq( 0 ).addClass( "sindel__item_active" );
             }
 
             f.scrollTo( item.get( 0 ) );
@@ -348,7 +348,7 @@ var Widget = function( el, settings ) {
         },
 
         scrollTo: function( item ) {
-            var list           = chosen.minors_list.get( 0 ),
+            var list           = chosen.minorsList.get( 0 ),
                 max_height     = list.offsetHeight,
                 visible_top    = list.scrollTop,
                 visible_bottom = max_height + visible_top,
@@ -364,15 +364,15 @@ var Widget = function( el, settings ) {
 
         findSearchMatches: function() {
             var value = chosen.search.val().toLocaleLowerCase(),
-                arr   = chosen.items.slice( params.majors_count ),
-                i     = params.majors_count, search_index, matches = [];
+                arr   = chosen.items.slice( params.majorsCount ),
+                i     = params.majorsCount, search_index, matches = [];
 
-            chosen.new_items = chosen.items.slice( 0, params.majors_count );
+            chosen.newItems = chosen.items.slice( 0, params.majorsCount );
 
             Utils.each( arr, function( item, index ) {
                 search_index = item.html().toLowerCase().search( value );
 
-                if ( matches.length >= params.search_limit || search_index === -1 ) {
+                if ( matches.length >= params.searchLimit || search_index === -1 ) {
                     item.removeAttr( "data-index" ).addClass( "b-hidden" );
                 } else if ( search_index >= 0 ) {
                     matches.push( item.get( 0 ) );
@@ -381,20 +381,20 @@ var Widget = function( el, settings ) {
             });
 
             chosen.matches   = matches;
-            chosen.new_items = chosen.new_items.add( matches );
+            chosen.newItems = chosen.newItems.add( matches );
         },
 
         showItems: function() {
             Utils.each( chosen.items, function( item, index ) {
-                if ( index < params.majors_count + params.search_limit ) {
+                if ( index < params.majorsCount + params.searchLimit ) {
                     item.removeClass( "b-hidden" ).attr( "data-index", index );
                 } else {
                     item.removeAttr( "data-index" ).addClass( "b-hidden" );
                 }
             });
 
-            chosen.new_items = chosen.items.slice( 0, params.majors_count + params.search_limit );
-            chosen.matches   = chosen.items.slice( params.majors_count ).get();
+            chosen.newItems = chosen.items.slice( 0, params.majorsCount + params.searchLimit );
+            chosen.matches  = chosen.items.slice( params.majorsCount ).get();
         },
 
         displayDrop: function() {
@@ -410,7 +410,7 @@ var Widget = function( el, settings ) {
             chosen.hovered.removeClass( "sindel__item_active" );
             chosen.selected = chosen.selected.hasClass( "b-hidden" ) ? chosen.items.eq( 0 ) : chosen.selected;
             chosen.selected.addClass( "sindel__item_active" );
-            scrollTo( chosen.selected.get( 0 ) );
+            f.scrollTo( chosen.selected.get( 0 ) );
         },
 
         closeWidget: function() {
@@ -421,7 +421,7 @@ var Widget = function( el, settings ) {
         selectItem: function( item ) {
             f.unselect();
             chosen.selected = item.addClass( "sindel__item_active" );
-            chosen.current_text.html( chosen.selected.html() );
+            chosen.currentText.html( chosen.selected.html() );
             select.ctx.get( 0 ).selectedIndex = parseInt( chosen.selected.attr( "data-original-index" ), 10 );
         },
 
