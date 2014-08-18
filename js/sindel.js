@@ -104,331 +104,339 @@ var Utils = {
 };
 
 var Widget = function( el, settings ) {
-    var doc = $( document ), is_open, is_mouseleave = false, params = {}, select = {}, chosen = {};
+    var doc = $( document ),
+        isOpen,
+        isMouseleave = false,
+        params = {},
+        select = {},
+        chosen = {},
+        f = {};
+    
+    f = {
+        init: function() {
+            var nodes;
 
-    function init() {
-        var nodes;
+            params = Utils.setParams( settings );
+            nodes  = Utils.cacheObjects( el );
+            chosen = nodes.chosen;
+            select = nodes.select;
 
-        params = Utils.setParams( settings );
-        nodes  = Utils.cacheObjects( el );
-        chosen = nodes.chosen;
-        select = nodes.select;
+            f.render( f.replaceItems() );
+            f.selectInitialItem();
+            f.closeWidget();
+            f.bindEvents();
+        },
 
-        render( replaceItems() );
-        selectInitialItem();
-        closeWidget();
-        bindEvents();
-    }
+        replaceItems: function() {
+            var majors = select.options.slice( 0, params.majors_count ),
+                minors = select.options.slice( params.majors_count );
 
-    function replaceItems() {
-        var majors = select.options.slice( 0, params.majors_count ),
-            minors = select.options.slice( params.majors_count );
+            return { majors: majors, minors: minors };
+        },
 
-        return { majors: majors, minors: minors };
-    }
+        render: function( data ) {
+            chosen.majors_list.html( Utils.getListTmp( data.majors, 0 ) );
+            chosen.minors_list.html( Utils.getListTmp( data.minors, data.majors.length ) );
 
-    function render( data ) {
-        chosen.majors_list.html( Utils.getListTmp( data.majors, 0 ) );
-        chosen.minors_list.html( Utils.getListTmp( data.minors, data.majors.length ) );
+            chosen.items = chosen.ctx.find( ".sindel__item" );
 
-        chosen.items = chosen.ctx.find( ".sindel__item" );
+            chosen.box.attr( "tabindex", select.ctx.attr( "tabindex" ) );
+            select.ctx.attr( "tabindex", -1 );
+            chosen.search.attr( "placeholder", "или введите другой" );
+            chosen.search.css( { width: chosen.drop.outerWidth() - 18 + "px" } );
+            chosen.ctx.css( { width: select.ctx.outerWidth() + "px" } );
+            select.ctx.addClass( "b-hidden" );
 
-        chosen.box.attr( "tabindex", select.ctx.attr( "tabindex" ) );
-        select.ctx.attr( "tabindex", -1 );
-        chosen.search.attr( "placeholder", "или введите другой" );
-        chosen.search.css( { width: chosen.drop.outerWidth() - 18 + "px" } );
-        chosen.ctx.css( { width: select.ctx.outerWidth() + "px" } );
-        select.ctx.addClass( "b-hidden" );
+            if ( params.minors_list_overflow ) {
+                chosen.minors_list.addClass( "sindel__minors_overflow" );
+            }
 
-        if ( params.minors_list_overflow ) {
-            chosen.minors_list.addClass( "sindel__minors_overflow" );
-        }
+            if ( !params.search_limit ) {
+                params.search_limit = data.minors.length;
+            }
+        },
 
-        if ( !params.search_limit ) {
-            params.search_limit = data.minors.length;
-        }
-    }
+        selectInitialItem: function() {
+            var res, value;
 
-    function selectInitialItem() {
-        var res, value;
+            if ( select.selected.length ) {
+                value = select.selected.html();
 
-        if ( select.selected.length ) {
-            value = select.selected.html();
+                Utils.each( chosen.items, function( item, index ) {
+                    if ( item.html() === value ) {
+                        f.selectItem( item );
+                        return false;
+                    }
+                });
+            } else {
+                f.selectByIndex( 0 );
+            }
+        },
 
-            Utils.each( chosen.items, function( item, index ) {
-                if ( item.html() === value ) {
-                    selectItem( item );
-                    return false;
+        selectByIndex: function( index ) {
+            f.selectItem( chosen.items.eq( index ) );
+        },
+
+        update: function() {
+            var index = select.ctx.get( 0 ).selectedIndex;
+            f.selectByIndex( index );
+        },
+
+        bindEvents: function() {
+            chosen.search.on( "keydown", f.onSearchKeydown );
+            chosen.search.on( "keyup",   f.onSearchKeyup );
+            chosen.search.on( "blur",    f.onSearchBlur );
+            chosen.ctx.on( "mouseover",  f.onItemMouseover );
+            chosen.ctx.on( "mouseout",   f.onItemMouseout );
+            chosen.ctx.on( "mouseenter", f.onCtxMouseenter );
+            chosen.ctx.on( "mouseleave", f.onCtxMouseleave );
+            chosen.ctx.on( "click",      f.onItemClick );
+            chosen.box.on( "mousedown",  f.onBoxMousedown );
+            chosen.box.on( "focus",      f.onBoxFocus );
+        },
+
+        onBoxFocus: function() {
+            chosen.ctx.addClass( "sindel_focus" );
+            chosen.search.focus();
+        },
+
+        onCtxMouseenter: function( e ) {
+            isMouseleave = false;
+        },
+
+        onCtxMouseleave: function( e ) {
+            isMouseleave = true;
+            isOpen ? chosen.search.focus() : null;
+        },
+
+        onSearchKeydown: function( e ) {
+            if ( ~[ 27, 38, 40, 13 ].indexOf( e.keyCode ) ) {
+                if ( !isOpen ) {
+                    chosen.ctx.removeClass( "sindel_focus" );
+                    f.openWidget();
+                    return;
+                }
+            }
+
+            switch( e.keyCode ) {
+                /* esc   */ case 27: f.onEscClose();        break;
+                /* up    */ case 38: f.navigate( - 1 );     break;
+                /* down  */ case 40: f.navigate(   1 );     break;
+                /* enter */ case 13: f.selectItemByInter(); break;
+            }
+        },
+
+        onEscClose: function() {
+            f.closeWidget();
+        },
+
+        onSearchKeyup: function( e ) {
+            switch( e.keyCode ) {
+                case 27: case 38: case 40: case 13: break; default: f.findAndSelectMatches();
+            }
+        },
+
+        onBoxMousedown: function( e ) {
+            doc.unbind( "click.chosen" );
+            chosen.ctx.removeClass( "sindel_focus" );
+            f.displayDrop();
+
+            doc.click( function( e ) {
+                if ( isMouseleave ) {
+                    doc.unbind( "click.chosen" );
+                    chosen.ctx.removeClass( "sindel_focus" );
+                    f.closeWidget();
                 }
             });
-        } else {
-            selectByIndex( 0 );
-        }
-    }
 
-    function selectByIndex( index ) {
-        selectItem( chosen.items.eq( index ) );
-    }
-
-    function update() {
-        var index = select.ctx.get( 0 ).selectedIndex;
-        selectByIndex( index );
-    }
-
-    function bindEvents() {
-        chosen.search.on( "keydown", onSearchKeydown );
-        chosen.search.on( "keyup",   onSearchKeyup );
-        chosen.search.on( "blur",    onSearchBlur );
-        chosen.ctx.on( "mouseover",  onItemMouseover );
-        chosen.ctx.on( "mouseout",   onItemMouseout );
-        chosen.ctx.on( "mouseenter", onCtxMouseenter );
-        chosen.ctx.on( "mouseleave", onCtxMouseleave );
-        chosen.ctx.on( "click",      onItemClick );
-        chosen.box.on( "mousedown",  onBoxMousedown );
-        chosen.box.on( "focus",      onBoxFocus );
-    }
-
-    function onBoxFocus() {
-        chosen.ctx.addClass( "sindel_focus" );
-        chosen.search.focus();
-    }
-
-    function onCtxMouseenter( e ) {
-        is_mouseleave = false;
-    }
-
-    function onCtxMouseleave( e ) {
-        is_mouseleave = true;
-        is_open ? chosen.search.focus() : null;
-    }
-
-    function onSearchKeydown( e ) {
-        if ( ~[ 27, 38, 40, 13 ].indexOf( e.keyCode ) ) {
-            if ( !is_open ) {
-                chosen.ctx.removeClass( "sindel_focus" );
-                openWidget();
-                return;
-            }
-        }
-
-        switch( e.keyCode ) {
-            /* esc   */ case 27: onEscClose();        break;
-            /* up    */ case 38: navigate( - 1 );     break;
-            /* down  */ case 40: navigate(   1 );     break;
-            /* enter */ case 13: selectItemByInter(); break;
-        }
-    }
-
-    function onEscClose() {
-        closeWidget();
-    }
-
-    function onSearchKeyup( e ) {
-        switch( e.keyCode ) {
-            case 27: case 38: case 40: case 13: break; default: findAndSelectMatches();
-        }
-    }
-
-    function onBoxMousedown( e ) {
-        doc.unbind( "click.chosen" );
-        chosen.ctx.removeClass( "sindel_focus" );
-        displayDrop();
-
-        doc.click( function( e ) {
-            if ( is_mouseleave ) {
-                doc.unbind( "click.chosen" );
-                chosen.ctx.removeClass( "sindel_focus" );
-                closeWidget();
-            }
-        });
-
-        return false;
-    }
-
-    function onSearchBlur( e ) {
-        if ( is_mouseleave ) {
-            closeWidget();
-        }
-
-        chosen.ctx.removeClass( "sindel_focus" );
-    }
-
-    function onItemClick( e ) {
-        var item = $( e.target );
-
-        if ( item.hasClass( "sindel__item" ) ) {
-            chosen.ctx.addClass( "sindel_focus" );
-            selectItem( item );
-            closeWidget();
-        }
-    }
-
-    function onItemMouseover( e ) {
-        var item = $( e.target );
-
-        if ( !item.hasClass( "sindel__item" ) || item.hasClass( "b-hidden" ) ) {
             return false;
-        }
+        },
 
-        if ( !item.hasClass( "sindel__item_active" ) ) {
-            unselect();
-            chosen.hovered = item;
-            item.addClass( "sindel__item_active" );
-        }
-    }
-
-    function onItemMouseout( e ) {
-        if ( $( e.target ).hasClass( "sindel__item_active" ) ) {
-            unselect();
-        }
-    }
-
-    function findAndSelectMatches() {
-        chosen.minors_list.get( 0 ).scrollTop = 0;
-
-        chosen.search.val() ? findSearchMatches() : showItems();
-
-        if ( chosen.matches.length ) {
-            onItemMouseover( { target: chosen.matches[ 0 ] } );
-        } else {
-            unselect();
-        }
-    }
-
-    function unselect() {
-        chosen.selected.removeClass( "sindel__item_active" );
-        chosen.hovered.removeClass( "sindel__item_active" );
-    }
-
-    function getCurrentItem() {
-        return chosen.hovered.hasClass( "sindel__item_active" )  ? chosen.hovered  :
-               chosen.selected.hasClass( "sindel__item_active" ) ? chosen.selected : null;
-    }
-
-    function selectItemByInter() {
-        var item = getCurrentItem();
-
-        if ( item ) {
-            onItemClick( { target: item.get( 0 ) } );
-        };
-    }
-
-    function getIndex( offset ) {
-        var item = getCurrentItem();
-
-        return item ?
-            parseInt( item.attr( "data-index" ), 10 ) :
-            parseInt( chosen.selected.attr( "data-index" ), 10 ) - 1;
-    }
-
-    function navigate( offset ) {
-        var index     = getIndex(),
-            new_index = index + offset,
-            length    = chosen.new_items.length, item;
-
-        unselect();
-
-        if ( new_index <= -1 ) {
-            item = chosen.new_items.eq( length - 1 ).addClass( "sindel__item_active" );
-        } else if ( new_index <= length - 1 ) {
-            item = chosen.new_items.eq( new_index ).addClass( "sindel__item_active" );
-        } else if ( new_index >= length ) {
-            item = chosen.new_items.eq( 0 ).addClass( "sindel__item_active" );
-        }
-
-        scrollTo( item.get( 0 ) );
-        chosen.hovered = item;
-    }
-
-    function scrollTo( item ) {
-        var list           = chosen.minors_list.get( 0 ),
-            max_height     = list.offsetHeight,
-            visible_top    = list.scrollTop,
-            visible_bottom = max_height + visible_top,
-            high_top       = item.offsetTop,
-            high_bottom    = high_top + item.offsetHeight;
-
-        if ( high_bottom >= visible_bottom ) {
-            list.scrollTop = ( high_bottom - max_height ) > 0 ? high_bottom - max_height : 0;
-        } else if ( high_top < visible_top ) {
-            return list.scrollTop = high_top;
-        }
-    }
-
-    function findSearchMatches() {
-        var value = chosen.search.val().toLocaleLowerCase(),
-            arr   = chosen.items.slice( params.majors_count ),
-            i     = params.majors_count, search_index, matches = [];
-
-        chosen.new_items = chosen.items.slice( 0, params.majors_count );
-
-        Utils.each( arr, function( item, index ) {
-            search_index = item.html().toLowerCase().search( value );
-
-            if ( matches.length >= params.search_limit || search_index === -1 ) {
-                item.removeAttr( "data-index" ).addClass( "b-hidden" );
-            } else if ( search_index >= 0 ) {
-                matches.push( item.get( 0 ) );
-                item.removeClass( "b-hidden" ).attr( "data-index", i++ );
+        onSearchBlur: function( e ) {
+            if ( isMouseleave ) {
+                f.closeWidget();
             }
-        });
 
-        chosen.matches   = matches;
-        chosen.new_items = chosen.new_items.add( matches );
-    }
+            chosen.ctx.removeClass( "sindel_focus" );
+        },
 
-    function showItems() {
-        Utils.each( chosen.items, function( item, index ) {
-            if ( index < params.majors_count + params.search_limit ) {
-                item.removeClass( "b-hidden" ).attr( "data-index", index );
+        onItemClick: function( e ) {
+            var item = $( e.target );
+
+            if ( item.hasClass( "sindel__item" ) ) {
+                chosen.ctx.addClass( "sindel_focus" );
+                f.selectItem( item );
+                f.closeWidget();
+            }
+        },
+
+        onItemMouseover: function( e ) {
+            var item = $( e.target );
+
+            if ( !item.hasClass( "sindel__item" ) || item.hasClass( "b-hidden" ) ) {
+                return false;
+            }
+
+            if ( !item.hasClass( "sindel__item_active" ) ) {
+                f.unselect();
+                chosen.hovered = item;
+                item.addClass( "sindel__item_active" );
+            }
+        },
+
+        onItemMouseout: function( e ) {
+            if ( $( e.target ).hasClass( "sindel__item_active" ) ) {
+                f.unselect();
+            }
+        },
+
+        findAndSelectMatches: function() {
+            chosen.minors_list.get( 0 ).scrollTop = 0;
+
+            chosen.search.val() ? f.findSearchMatches() : f.showItems();
+
+            if ( chosen.matches.length ) {
+                f.onItemMouseover( { target: chosen.matches[ 0 ] } );
             } else {
-                item.removeAttr( "data-index" ).addClass( "b-hidden" );
+                f.unselect();
             }
-        });
+        },
 
-        chosen.new_items = chosen.items.slice( 0, params.majors_count + params.search_limit );
-        chosen.matches   = chosen.items.slice( params.majors_count ).get();
-    }
+        unselect: function() {
+            chosen.selected.removeClass( "sindel__item_active" );
+            chosen.hovered.removeClass( "sindel__item_active" );
+        },
 
-    function displayDrop() {
-        !is_open ? openWidget() : closeWidget();
-    }
+        getCurrentItem: function() {
+            return chosen.hovered.hasClass( "sindel__item_active" )  ? chosen.hovered  :
+                   chosen.selected.hasClass( "sindel__item_active" ) ? chosen.selected : null;
+        },
 
-    function openWidget() {
-        is_open = true;
-        chosen.ctx.removeClass( "sindel_focus" ).addClass( "sindel_active" );
-        showItems();
-        chosen.search.val( "" );
-        chosen.search.focus();
-        chosen.hovered.removeClass( "sindel__item_active" );
-        chosen.selected = chosen.selected.hasClass( "b-hidden" ) ? chosen.items.eq( 0 ) : chosen.selected;
-        chosen.selected.addClass( "sindel__item_active" );
-        scrollTo( chosen.selected.get( 0 ) );
-    }
+        selectItemByInter: function() {
+            var item = f.getCurrentItem();
 
-    function closeWidget() {
-        is_open = false;
-        chosen.ctx.removeClass( "sindel_active" );
-    }
+            if ( item ) {
+                f.onItemClick( { target: item.get( 0 ) } );
+            }
+        },
 
-    function selectItem( item ) {
-        unselect();
-        chosen.selected = item.addClass( "sindel__item_active" );
-        chosen.current_text.html( chosen.selected.html() );
-        select.ctx.get( 0 ).selectedIndex = parseInt( chosen.selected.attr( "data-original-index" ), 10 );
-    }
+        getIndex: function( offset ) {
+            var item = f.getCurrentItem();
 
-    function destroy() {
-        doc.off( "click.chosen" );
-        select.ctx.removeClass( "b-hidden" );
-        chosen.ctx.remove();
+            return item ?
+                parseInt( item.attr( "data-index" ), 10 ) :
+                parseInt( chosen.selected.attr( "data-index" ), 10 ) - 1;
+        },
+
+        navigate: function( offset ) {
+            var index     = f.getIndex(),
+                new_index = index + offset,
+                length    = chosen.new_items.length, item;
+
+            f.unselect();
+
+            if ( new_index <= -1 ) {
+                item = chosen.new_items.eq( length - 1 ).addClass( "sindel__item_active" );
+            } else if ( new_index <= length - 1 ) {
+                item = chosen.new_items.eq( new_index ).addClass( "sindel__item_active" );
+            } else if ( new_index >= length ) {
+                item = chosen.new_items.eq( 0 ).addClass( "sindel__item_active" );
+            }
+
+            f.scrollTo( item.get( 0 ) );
+            chosen.hovered = item;
+        },
+
+        scrollTo: function( item ) {
+            var list           = chosen.minors_list.get( 0 ),
+                max_height     = list.offsetHeight,
+                visible_top    = list.scrollTop,
+                visible_bottom = max_height + visible_top,
+                high_top       = item.offsetTop,
+                high_bottom    = high_top + item.offsetHeight;
+
+            if ( high_bottom >= visible_bottom ) {
+                list.scrollTop = ( high_bottom - max_height ) > 0 ? high_bottom - max_height : 0;
+            } else if ( high_top < visible_top ) {
+                return list.scrollTop = high_top;
+            }
+        },
+
+        findSearchMatches: function() {
+            var value = chosen.search.val().toLocaleLowerCase(),
+                arr   = chosen.items.slice( params.majors_count ),
+                i     = params.majors_count, search_index, matches = [];
+
+            chosen.new_items = chosen.items.slice( 0, params.majors_count );
+
+            Utils.each( arr, function( item, index ) {
+                search_index = item.html().toLowerCase().search( value );
+
+                if ( matches.length >= params.search_limit || search_index === -1 ) {
+                    item.removeAttr( "data-index" ).addClass( "b-hidden" );
+                } else if ( search_index >= 0 ) {
+                    matches.push( item.get( 0 ) );
+                    item.removeClass( "b-hidden" ).attr( "data-index", i++ );
+                }
+            });
+
+            chosen.matches   = matches;
+            chosen.new_items = chosen.new_items.add( matches );
+        },
+
+        showItems: function() {
+            Utils.each( chosen.items, function( item, index ) {
+                if ( index < params.majors_count + params.search_limit ) {
+                    item.removeClass( "b-hidden" ).attr( "data-index", index );
+                } else {
+                    item.removeAttr( "data-index" ).addClass( "b-hidden" );
+                }
+            });
+
+            chosen.new_items = chosen.items.slice( 0, params.majors_count + params.search_limit );
+            chosen.matches   = chosen.items.slice( params.majors_count ).get();
+        },
+
+        displayDrop: function() {
+            !isOpen ? f.openWidget() : f.closeWidget();
+        },
+
+        openWidget: function() {
+            isOpen = true;
+            chosen.ctx.removeClass( "sindel_focus" ).addClass( "sindel_active" );
+            f.showItems();
+            chosen.search.val( "" );
+            chosen.search.focus();
+            chosen.hovered.removeClass( "sindel__item_active" );
+            chosen.selected = chosen.selected.hasClass( "b-hidden" ) ? chosen.items.eq( 0 ) : chosen.selected;
+            chosen.selected.addClass( "sindel__item_active" );
+            scrollTo( chosen.selected.get( 0 ) );
+        },
+
+        closeWidget: function() {
+            isOpen = false;
+            chosen.ctx.removeClass( "sindel_active" );
+        },
+
+        selectItem: function( item ) {
+            f.unselect();
+            chosen.selected = item.addClass( "sindel__item_active" );
+            chosen.current_text.html( chosen.selected.html() );
+            select.ctx.get( 0 ).selectedIndex = parseInt( chosen.selected.attr( "data-original-index" ), 10 );
+        },
+
+        destroy: function() {
+            doc.off( "click.chosen" );
+            select.ctx.removeClass( "b-hidden" );
+            chosen.ctx.remove();
+        }
     };
 
-    init();
+    f.init();
 
     return {
-        destroy: destroy,
-        update: update
+        destroy: f.destroy,
+        update: f.update
     };
 };
 
