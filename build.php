@@ -14,7 +14,7 @@ function createBundle( $files, $path, $bundle ) {
     $file_str = preg_replace( "/window/", "global", $file_str );
 
     $file_handle = fopen( $bundle, "w+" );
-    fwrite( $file_handle, "(function( $, global )\r\n{\r\n" );
+    fwrite( $file_handle, "(function( $, global ) {\r\n" );
     fwrite( $file_handle, $file_str );
     fwrite( $file_handle, "})( jQuery, window );" );
     fclose( $file_handle );

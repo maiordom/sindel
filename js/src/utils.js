@@ -27,14 +27,14 @@ var Utils = {
         return $( div.firstChild );
     },
 
-    forEach: function( obj, callback ) {
+    forEach: function( obj, callback, ctx ) {
         for ( var i = 0, ilen = obj.length; i < ilen; i++ )
-            if ( callback.call( obj[ i ], obj[ i ], i ) === false ) { break; }
+            if ( callback.call( ctx, obj[ i ], i ) === false ) { break; }
     },
 
-    each: function( obj, callback ) {
+    each: function( obj, callback, ctx ) {
         for ( var i = 0, ilen = obj.length; i < ilen; i++ )
-            if ( callback.call( obj.eq( i ), obj.eq( i ), i ) === false ) { break; }
+            if ( callback.call( ctx, obj.eq( i ), i ) === false ) { break; }
     },
 
     toArray: function( nodeList ) {
@@ -67,7 +67,7 @@ var Utils = {
             currentText: chosenCtx.find( ".sindel__current-text" ),
             majorsList:  chosenCtx.find( ".sindel__majors" ),
             minorsList:  chosenCtx.find( ".sindel__minors" ),
-            new_items:   $(),
+            newItems:    $(),
             matches:     $(),
             items:       $(),
             selected:    $(),
@@ -100,3 +100,13 @@ var Utils = {
         return $.extend( params, settings );
     }
 };
+
+if ( !Function.prototype.bind ) {
+    Function.prototype.bind = function( ctx ) {
+        var bindArgs = [].slice.call( arguments, 2 ), bindFn = this, callbackArgs;
+        return function() {
+            callbackArgs = bindArgs.concat( [].slice.call( arguments ) );
+            return bindFn.apply( ctx, callbackArgs );
+        };
+    };
+}
