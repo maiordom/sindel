@@ -1,23 +1,25 @@
-<!doctype html>
-<!--[if IE 7 ]> <html lang="ru" class="no-js ie lt-ie8"> <![endif]-->
-<!--[if IE 8 ]> <html lang="ru" class="no-js ie ie8 lt-ie9"><![endif]-->
-<!--[if IE 9 ]> <html lang="ru" class="no-js ie ie9 lt-ie10"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html lang="ru" class="no-js"><!--<![endif]-->
+<!DOCTYPE html>
+<html>
 
 <head>
 
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
-    <title>Sindel - Select</title>
+    <title>Sindel</title>
 
     <style type="text/css">
-        .wrapper { padding: 50px; float: left; }
-        .city { margin-right: 50px; }
+        .wrapper {
+            padding: 50px;
+            float: left;
+        }
+        
+        .city {
+            margin-right: 50px;
+        }
     </style>
 
-    <link rel="stylesheet" href="sindel.css" />
-
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
-    <script type="text/javascript" src="js/sindel.js"></script>
+    <link rel="stylesheet" href="../dist/sindel.css" />
+    <script type="text/javascript" src="../dist/sindel.js"></script>
 
 </head>
 
@@ -126,16 +128,21 @@
     </div>
 
 <script type="text/javascript">
-    $( document ).ready( function() {
-        var city = $( ".city" );
+    $(document).ready(function() {
+        var city = $('.city');
 
-        city.eq( 0 ).sindel( { majorsCount: 0 } );
-        city.eq( 1 ).sindel( { majorsCount: 4, searchLimit: 5 } );
-        city.eq( 2 ).sindel( { minorsListOverflow: false } );
+        city.eq(0).sindel({
+            majorsCount: 0
+        });
 
-        city.eq( 0 ).sindel();
-        city.eq( 1 ).sindel();
-        city.eq( 2 ).sindel();
+        city.eq(1).sindel({
+            majorsCount: 4,
+            searchLimit: 5
+        });
+
+        city.eq(2).sindel({
+            minorsListOverflow: false
+        });
     });
 </script>
 
