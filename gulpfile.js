@@ -72,5 +72,9 @@ gulp.task('min-css', () => {
         .pipe(gulp.dest('./dist'));
 });
 
+gulp.task('js', () => {
+    return runSequence('replace', ['babel']);
+});
+
 gulp.task('build', ['min-js', 'min-css']);
-gulp.task('default', ['server', 'watch', 'replace', 'babel', 'stylus']);
+gulp.task('default', ['server', 'watch', 'js', 'stylus']);
