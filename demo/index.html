@@ -7,13 +7,22 @@
     <title>Sindel</title>
 
     <style type="text/css">
-        .wrapper {
-            padding: 50px;
-            float: left;
+        HTML, BODY {
+            width: 100%;
+            height: 100%;
         }
-        
-        .city {
-            margin-right: 50px;
+
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .sindel {
+            margin: 50px 100px 0 0;
+        }
+
+        .sindel:first-child {
+            margin-left: 50px;
         }
     </style>
 
@@ -25,107 +34,86 @@
 
 <body>
 
-    <div class="wrapper">
+    <select class="city">
 
-        <select class="city">
+        <option>Москва</option>
+        <option>Санкт-Петербург</option>
+        <option>Новосибирск</option>
+        <option selected>Екатеринбург</option>
+        <option>Нижний Новгород</option>
+        <option>Самара</option>
+        <option>Омск</option>
+        <option>Казань</option>
+        <option>Челябинск</option>
+        <option>Ростов-на-Дону</option>
+        <option>Уфа</option>
+        <option>Волгоград</option>
+        <option>Пермь</option>
+        <option>Красноярск</option>
+        <option>Воронеж</option>
+        <option>Саратов</option>
+        <option>Краснодар</option>
+        <option>Тольятти</option>
+        <option>Ижевск</option>
+        <option>Ульяновск</option>
+        <option>Барнаул</option>
+        <option>Владивосток</option>
+        <option>Ярославль</option>
+        <option>Иркутск</option>
 
-            <option>Москва</option>
-            <option>Санкт-Петербург</option>
-            <option>Новосибирск</option>
-            <option selected>Екатеринбург</option>
-            <option>Нижний Новгород</option>
-            <option>Самара</option>
-            <option>Омск</option>
-            <option>Казань</option>
-            <option>Челябинск</option>
-            <option>Ростов-на-Дону</option>
-            <option>Уфа</option>
-            <option>Волгоград</option>
-            <option>Пермь</option>
-            <option>Красноярск</option>
+    </select>
 
-            <option>Воронеж</option>
-            <option>Саратов</option>
-            <option>Краснодар</option>
-            <option>Тольятти</option>
-            <option>Ижевск</option>
-            <option>Ульяновск</option>
-            <option>Барнаул</option>
-            <option>Владивосток</option>
-            <option>Ярославль</option>
-            <option>Иркутск</option>
+    <select class="city">
 
-        </select>
+        <option>Москва</option>
+        <option>Санкт-Петербург</option>
+        <option>Новосибирск</option>
+        <option>Екатеринбург</option>
+        <option>Нижний Новгород</option>
+        <option>Самара</option>
+        <option>Омск</option>
+        <option>Казань</option>
+        <option>Челябинск</option>
+        <option>Ростов-на-Дону</option>
+        <option>Уфа</option>
+        <option>Волгоград</option>
+        <option>Пермь</option>
+        <option>Красноярск</option>
+        <option>Воронеж</option>
+        <option>Саратов</option>
+        <option>Краснодар</option>
+        <option selected>Тольятти</option>
+        <option>Ижевск</option>
+        <option>Ульяновск</option>
+        <option>Барнаул</option>
+        <option>Владивосток</option>
+        <option>Ярославль</option>
+        <option>Иркутск</option>
 
-    </div>
+    </select>
 
-    <div class="wrapper">
+    <select class="city">
 
-        <select class="city">
+        <option>Москва</option>
+        <option>Санкт-Петербург</option>
+        <option>Новосибирск</option>
+        <option>Екатеринбург</option>
+        <option>Нижний Новгород</option>
+        <option>Самара</option>
+        <option>Омск</option>
+        <option>Воронеж</option>
+        <option>Саратов</option>
+        <option>Краснодар</option>
+        <option>Тольятти</option>
+        <option>Ижевск</option>
+        <option>Ульяновск</option>
+        <option>Барнаул</option>
+        <option>Владивосток</option>
+        <option>Ярославль</option>
+        <option>Иркутск</option>
 
-            <option>Москва</option>
-            <option>Санкт-Петербург</option>
-            <option>Новосибирск</option>
-            <option>Екатеринбург</option>
-            <option>Нижний Новгород</option>
-            <option>Самара</option>
-            <option>Омск</option>
-            <option>Казань</option>
-            <option>Челябинск</option>
-            <option>Ростов-на-Дону</option>
-            <option>Уфа</option>
-            <option>Волгоград</option>
-            <option>Пермь</option>
-            <option>Красноярск</option>
+    </select>
 
-            <option>Воронеж</option>
-            <option>Саратов</option>
-            <option>Краснодар</option>
-            <option selected>Тольятти</option>
-            <option>Ижевск</option>
-            <option>Ульяновск</option>
-            <option>Барнаул</option>
-            <option>Владивосток</option>
-            <option>Ярославль</option>
-            <option>Иркутск</option>
-
-        </select>
-
-    </div>
-
-    <div class="wrapper">
-
-        <select class="city">
-
-            <option>Москва</option>
-            <option>Санкт-Петербург</option>
-            <option>Новосибирск</option>
-            <option>Екатеринбург</option>
-            <option>Нижний Новгород</option>
-            <option>Самара</option>
-            <option>Омск</option>
-            <option>Казань</option>
-            <option>Челябинск</option>
-            <option>Ростов-на-Дону</option>
-            <option>Уфа</option>
-            <option>Волгоград</option>
-            <option>Пермь</option>
-            <option>Красноярск</option>
-
-            <option>Воронеж</option>
-            <option>Саратов</option>
-            <option>Краснодар</option>
-            <option>Тольятти</option>
-            <option>Ижевск</option>
-            <option>Ульяновск</option>
-            <option>Барнаул</option>
-            <option>Владивосток</option>
-            <option>Ярославль</option>
-            <option>Иркутск</option>
-
-        </select>
-
-    </div>
 
 <script type="text/javascript">
     $(document).ready(function() {

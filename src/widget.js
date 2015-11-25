@@ -1,16 +1,14 @@
-var Widget = function(el, settings) {
-    this.init(el, settings);
+class Widget {
+    constructor(el, settings) {
+        this.init(el, settings);
 
-    return {
-        destroy: this.destroy.bind(this),
-        update: this.update.bind(this)
-    };
-};
+        return {
+            destroy: this.destroy.bind(this),
+            update: this.update.bind(this)
+        };
+    }
 
-Widget.prototype = {
-    init: function(el, settings) {
-        var nodes;
-
+    init(el, settings) {
         this.doc = $(document);
         this.isOpen = null;
         this.isMouseleave = false;
@@ -19,7 +17,7 @@ Widget.prototype = {
         this.chosen = {};
 
         this.params = Utils.setParams(settings);
-        nodes = Utils.cacheObjects(el);
+        let nodes = Utils.cacheObjects(el);
         this.chosen = nodes.chosen;
         this.select = nodes.select;
 
@@ -27,46 +25,39 @@ Widget.prototype = {
         this.selectInitialItem();
         this.closeWidget();
         this.bindEvents();
-    },
+    }
 
-    replaceItems: function() {
-        var majors = this.select.options.slice(0, this.params.majorsCount),
-            minors = this.select.options.slice(this.params.majorsCount);
+    replaceItems() {
+        let majors = this.select.options.slice(0, this.params.majorsCount);
+        let minors = this.select.options.slice(this.params.majorsCount);
 
         return {
             majors: majors,
             minors: minors
         };
-    },
+    }
 
-    render: function(data) {
+    render(data) {
         this.chosen.majorsList.html(Utils.getListTmp(data.majors, 0));
         this.chosen.minorsList.html(Utils.getListTmp(data.minors, data.majors.length));
 
-        this.chosen.items = this.chosen.ctx.find('.sindel__item');
+        this.chosen.items = this.chosen.ctx.find(`.${namespace}__item`);
 
-        this.chosen.box.attr('tabindex', this.select.ctx.attr('tabindex'));
         this.select.ctx.attr('tabindex', -1);
         this.chosen.search.attr('placeholder', 'или введите другой');
-        this.chosen.search.css({
-            width: this.chosen.drop.outerWidth() - 18 + 'px'
-        });
-        this.chosen.ctx.css({
-            width: this.select.ctx.outerWidth() + 'px'
-        });
         this.select.ctx.addClass('b-hidden');
 
         if (this.params.minorsListOverflow) {
-            this.chosen.minorsList.addClass('sindel__minors_overflow');
+            this.chosen.minorsList.addClass(`${namespace}__minors_overflow`);
         }
 
         if (!this.params.searchLimit) {
             this.params.searchLimit = data.minors.length;
         }
-    },
+    }
 
-    selectInitialItem: function() {
-        var res, value;
+    selectInitialItem() {
+        let res, value;
 
         if (this.select.selected.length) {
             value = this.select.selected.html();
@@ -80,18 +71,18 @@ Widget.prototype = {
         } else {
             this.selectByIndex(0);
         }
-    },
+    }
 
-    selectByIndex: function(index) {
+    selectByIndex(index) {
         this.selectItem(this.chosen.items.eq(index));
-    },
+    }
 
-    update: function() {
-        var index = this.select.ctx.get(0).selectedIndex;
+    update() {
+        let index = this.select.ctx.get(0).selectedIndex;
         this.selectByIndex(index);
-    },
+    }
 
-    bindEvents: function() {
+    bindEvents() {
         this.chosen.search.on('keydown', this.onSearchKeydown.bind(this));
         this.chosen.search.on('keyup', this.onSearchKeyup.bind(this));
         this.chosen.search.on('blur', this.onSearchBlur.bind(this));
@@ -99,29 +90,32 @@ Widget.prototype = {
         this.chosen.ctx.on('mouseout', this.onItemMouseout.bind(this));
         this.chosen.ctx.on('mouseenter', this.onCtxMouseenter.bind(this));
         this.chosen.ctx.on('mouseleave', this.onCtxMouseleave.bind(this));
+        this.chosen.ctx.on('click', this.onCtxClick.bind(this));
         this.chosen.ctx.on('click', this.onItemClick.bind(this));
         this.chosen.box.on('mousedown', this.onBoxMousedown.bind(this));
         this.chosen.box.on('focus', this.onBoxFocus.bind(this));
-    },
+    }
 
-    onBoxFocus: function() {
-        this.chosen.ctx.addClass('sindel_focus');
+    onBoxFocus() {
+        this.chosen.ctx.addClass(`${namespace}_focus`);
         this.chosen.search.focus();
-    },
+    }
 
-    onCtxMouseenter: function(e) {
+    onCtxMouseenter() {
         this.isMouseleave = false;
-    },
+        this.chosen.ctx.addClass(`${namespace}_hover`);
+    }
 
-    onCtxMouseleave: function(e) {
+    onCtxMouseleave() {
         this.isMouseleave = true;
         this.isOpen ? this.chosen.search.focus() : null;
-    },
+        this.chosen.ctx.removeClass(`${namespace}_hover`);
+    }
 
-    onSearchKeydown: function(e) {
+    onSearchKeydown(e) {
         if (~[27, 38, 40, 13].indexOf(e.keyCode)) {
             if (!this.isOpen) {
-                this.chosen.ctx.removeClass('sindel_focus');
+                this.chosen.ctx.removeClass(`${namespace}_focus`);
                 this.openWidget();
                 return;
             }
@@ -145,13 +139,13 @@ Widget.prototype = {
                 this.selectItemByInter();
                 break;
         }
-    },
+    }
 
-    onEscClose: function() {
+    onEscClose() {
         this.closeWidget();
-    },
+    }
 
-    onSearchKeyup: function(e) {
+    onSearchKeyup(e) {
         switch (e.keyCode) {
             case 27:
             case 38:
@@ -161,63 +155,69 @@ Widget.prototype = {
             default:
                 this.findAndSelectMatches();
         }
-    },
+    }
 
-    onBoxMousedown: function(e) {
-        this.doc.unbind('click.chosen');
-        this.chosen.ctx.removeClass('sindel_focus');
-        this.displayDrop();
-        this.doc.click(this.onDocClick.bind(this));
+    onBoxMousedown() {
+        this.chosen.ctx.removeClass(`${namespace}_focus`);
+        this.chosen.ctx.addClass(`${namespace}_pressed`);
+        this.doc.off('click.chosen');
+        this.doc.on('click.chosen', this.onDocClick.bind(this));
         return false;
-    },
+    }
 
-    onDocClick: function() {
+    onCtxClick() {
+        this.displayDrop();
+    }
+
+    onDocClick() {
         if (this.isMouseleave) {
-            this.doc.unbind('click.chosen');
-            this.chosen.ctx.removeClass('sindel_focus');
+            this.doc.off('click.chosen');
+            this.chosen.ctx.removeClass(`${namespace}_focus`);
             this.closeWidget();
         }
-    },
 
-    onSearchBlur: function(e) {
+        this.chosen.ctx.removeClass(`${namespace}_pressed`);
+    }
+
+    onSearchBlur() {
         if (this.isMouseleave) {
             this.closeWidget();
         }
 
-        this.chosen.ctx.removeClass('sindel_focus');
-    },
+        this.chosen.ctx.removeClass(`${namespace}_focus`);
+    }
 
-    onItemClick: function(e) {
-        var item = $(e.target);
+    onItemClick(e) {
+        let item = $(e.target);
 
-        if (item.hasClass('sindel__item')) {
-            this.chosen.ctx.addClass('sindel_focus');
+        if (item.hasClass(`${namespace}__item`)) {
             this.selectItem(item);
             this.closeWidget();
+            e.stopPropagation();
         }
-    },
+    }
 
-    onItemMouseover: function(e) {
-        var item = $(e.target);
+    onItemMouseover(e) {
+        let item = $(e.target);
 
-        if (!item.hasClass('sindel__item') || item.hasClass('b-hidden')) {
+        if (!item.hasClass(`${namespace}__item') || item.hasClass('b-hidden`)) {
             return false;
         }
 
-        if (!item.hasClass('sindel__item_active')) {
+        if (!item.hasClass(`${namespace}__item_active`)) {
             this.unselect();
             this.chosen.hovered = item;
-            item.addClass('sindel__item_active');
+            item.addClass(`${namespace}__item_active`);
         }
-    },
+    }
 
-    onItemMouseout: function(e) {
-        if ($(e.target).hasClass('sindel__item_active')) {
+    onItemMouseout(e) {
+        if ($(e.target).hasClass(`${namespace}__item_active`)) {
             this.unselect();
         }
-    },
+    }
 
-    findAndSelectMatches: function() {
+    findAndSelectMatches() {
         this.chosen.minorsList.get(0).scrollTop = 0;
 
         this.chosen.search.val() ? this.findSearchMatches() : this.showItems();
@@ -229,85 +229,91 @@ Widget.prototype = {
         } else {
             this.unselect();
         }
-    },
+    }
 
-    unselect: function() {
-        this.chosen.selected.removeClass('sindel__item_active');
-        this.chosen.hovered.removeClass('sindel__item_active');
-    },
+    unselect() {
+        this.chosen.selected.removeClass(`${namespace}__item_active`);
+        this.chosen.hovered.removeClass(`${namespace}__item_active`);
+    }
 
-    getCurrentItem: function() {
-        return this.chosen.hovered.hasClass('sindel__item_active') ? this.chosen.hovered :
-            this.chosen.selected.hasClass('sindel__item_active') ? this.chosen.selected : null;
-    },
+    getCurrentItem() {
+        if (this.chosen.hovered.hasClass(`${namespace}__item_active`)) {
+            return this.chosen.hovered;
+        } else if (this.chosen.selected.hasClass(`${namespace}__item_active`)) {
+            return this.chosen.selected;
+        }
 
-    selectItemByInter: function() {
-        var item = this.getCurrentItem();
+        return null;
+    }
+
+    selectItemByInter() {
+        let item = this.getCurrentItem();
 
         if (item) {
-            this.onItemClick({
+            this.onItemClick(new $.Event('click', {
                 target: item.get(0)
-            });
+            }));
         }
-    },
+    }
 
-    getIndex: function(offset) {
-        var item = this.getCurrentItem();
+    getIndex(offset) {
+        let item = this.getCurrentItem();
 
         return item ?
             parseInt(item.attr('data-index'), 10) :
             parseInt(this.chosen.selected.attr('data-index'), 10) - 1;
-    },
+    }
 
-    navigate: function(offset) {
-        var index = this.getIndex(),
-            new_index = index + offset,
-            length = this.chosen.newItems.length,
-            item;
+    navigate(offset) {
+        let index = this.getIndex();
+        let new_index = index + offset;
+        let length = this.chosen.newItems.length;
+        let item;
 
         this.unselect();
 
         if (new_index <= -1) {
-            item = this.chosen.newItems.eq(length - 1).addClass('sindel__item_active');
+            item = this.chosen.newItems.eq(length - 1).addClass(`${namespace}__item_active`);
         } else if (new_index <= length - 1) {
-            item = this.chosen.newItems.eq(new_index).addClass('sindel__item_active');
+            item = this.chosen.newItems.eq(new_index).addClass(`${namespace}__item_active`);
         } else if (new_index >= length) {
-            item = this.chosen.newItems.eq(0).addClass('sindel__item_active');
+            item = this.chosen.newItems.eq(0).addClass(`${namespace}__item_active`);
         }
 
         this.scrollTo(item.get(0));
         this.chosen.hovered = item;
-    },
+    }
 
-    scrollTo: function(item) {
-        var list = this.chosen.minorsList.get(0),
-            max_height = list.offsetHeight,
-            visible_top = list.scrollTop,
-            visible_bottom = max_height + visible_top,
-            high_top = item.offsetTop,
-            high_bottom = high_top + item.offsetHeight;
+    scrollTo(item) {
+        let list = this.chosen.minorsList.get(0);
+        let maxHeight = list.offsetHeight;
+        let visibleTop = list.scrollTop;
+        let visibleBottom = maxHeight + visibleTop;
+        let highTop = item.offsetTop;
+        let highBottom = highTop + item.offsetHeight;
 
-        if (high_bottom >= visible_bottom) {
-            list.scrollTop = (high_bottom - max_height) > 0 ? high_bottom - max_height : 0;
-        } else if (high_top < visible_top) {
-            return list.scrollTop = high_top;
+        if (highBottom >= visibleBottom) {
+            list.scrollTop = (highBottom - maxHeight) > 0 ? highBottom - maxHeight : 0;
+        } else if (highTop < visibleTop) {
+            return list.scrollTop = highTop;
         }
-    },
+    }
 
-    findSearchMatches: function() {
-        var value = this.chosen.search.val().toLocaleLowerCase(),
-            arr = this.chosen.items.slice(this.params.majorsCount),
-            i = this.params.majorsCount,
-            search_index, matches = [];
+    findSearchMatches() {
+        let value = this.chosen.search.val().toLocaleLowerCase();
+        let arr = this.chosen.items.slice(this.params.majorsCount);
+        let i = this.params.majorsCount;
+        let searchIndex;
+        let matches = [];
 
         this.chosen.newItems = this.chosen.items.slice(0, this.params.majorsCount);
 
         Utils.each(arr, function(item, index) {
-            search_index = item.html().toLowerCase().search(value);
+            searchIndex = item.html().toLowerCase().search(value);
 
-            if (matches.length >= this.params.searchLimit || search_index === -1) {
+            if (matches.length >= this.params.searchLimit || searchIndex === -1) {
                 item.removeAttr('data-index').addClass('b-hidden');
-            } else if (search_index >= 0) {
+            } else if (searchIndex >= 0) {
                 matches.push(item.get(0));
                 item.removeClass('b-hidden').attr('data-index', i++);
             }
@@ -315,9 +321,9 @@ Widget.prototype = {
 
         this.chosen.matches = matches;
         this.chosen.newItems = this.chosen.newItems.add(matches);
-    },
+    }
 
-    showItems: function() {
+    showItems() {
         Utils.each(this.chosen.items, function(item, index) {
             if (index < this.params.majorsCount + this.params.searchLimit) {
                 item.removeClass('b-hidden').attr('data-index', index);
@@ -328,37 +334,39 @@ Widget.prototype = {
 
         this.chosen.newItems = this.chosen.items.slice(0, this.params.majorsCount + this.params.searchLimit);
         this.chosen.matches = this.chosen.items.slice(this.params.majorsCount).get();
-    },
+    }
 
-    displayDrop: function() {
+    displayDrop() {
         !this.isOpen ? this.openWidget() : this.closeWidget();
-    },
+    }
 
-    openWidget: function() {
+    openWidget() {
         this.isOpen = true;
-        this.chosen.ctx.removeClass('sindel_focus').addClass('sindel_active');
+        this.chosen.ctx.removeClass(`${namespace}_focus`).addClass(`${namespace}_active`);
         this.showItems();
         this.chosen.search.val('');
         this.chosen.search.focus();
-        this.chosen.hovered.removeClass('sindel__item_active');
+        this.chosen.hovered.removeClass(`${namespace}__item_active`);
         this.chosen.selected = this.chosen.selected.hasClass('b-hidden') ? this.chosen.items.eq(0) : this.chosen.selected;
-        this.chosen.selected.addClass('sindel__item_active');
+        this.chosen.selected.addClass(`${namespace}__item_active`);
         this.scrollTo(this.chosen.selected.get(0));
-    },
+    }
 
-    closeWidget: function() {
+    closeWidget() {
         this.isOpen = false;
-        this.chosen.ctx.removeClass('sindel_active');
-    },
+        this.chosen.ctx.removeClass(`${namespace}_active`);
+        this.chosen.ctx.removeClass(`${namespace}_hover`);
+    }
 
-    selectItem: function(item) {
+    selectItem(item) {
         this.unselect();
-        this.chosen.selected = item.addClass('sindel__item_active');
+        this.chosen.selected.removeClass(`${namespace}__item_selected`);
+        this.chosen.selected = item.addClass(`${namespace}__item_selected`);
         this.chosen.currentText.html(this.chosen.selected.html());
         this.select.ctx.get(0).selectedIndex = parseInt(this.chosen.selected.attr('data-original-index'), 10);
-    },
+    }
 
-    destroy: function() {
+    destroy() {
         this.doc.off('click.chosen');
         this.select.ctx.removeClass('b-hidden');
         this.chosen.ctx.remove();
@@ -367,10 +375,10 @@ Widget.prototype = {
 
 $.fn.sindel = function(options) {
     Utils.each(this, function(item) {
-        if (item.data('sindel')) {
-            console.log('sindel already init: ', item, options);
+        if (item.data(`${namespace}`)) {
+            console.log(`${namespace} already init: `, item, options);
         } else {
-            item.data('sindel', new Widget(item, options || {}));
+            item.data(`${namespace}`, new Widget(item, options || {}));
         }
     }, this);
 };

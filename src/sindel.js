@@ -2,6 +2,8 @@
 
 (function (root, $, undefined) {
 
+const namespace = 'sindel';
+
 @utils
 @widget
 

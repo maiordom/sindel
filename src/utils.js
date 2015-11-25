@@ -1,48 +1,41 @@
-var Utils = {
-    tmpl: '' +
-    '<div class="sindel sindel_active">' +
-        '<a href="javascript:void(0)" class="sindel__box" tabindex="1">' +
-            '<div class="sindel__current-text"></div>' +
-            '<div class="sindel__arrow-wrapper">' +
-                '<div class="sindel__arrow"></div>' +
-            '</div>' +
-        '</a>' +
-        '<div class="sindel__drop">' +
-            '<div class="sindel__drop-inner">' +
-                '<ul class="sindel__majors"></ul>' +
-                '<input class="sindel__search" type="text" tabindex="-1" />' +
-                '<ul class="sindel__minors"></ul>' +
-            '</div>' +
-            '<div class="sindel__shadow">' +
-                '<div class="sindel__corner sindel__corner_left"></div>' +
-                '<div class="sindel__corner sindel__corner_right"></div>' +
-                '<div class="sindel__corner sindel__shadow-bck "></div>' +
-            '</div>' +
-        '</div>' +
-    '</div>',
+const Utils = {
+    tmpl:
+    `<div class="${namespace} ${namespace}_active">
+        <div class="${namespace}__box">
+            <div class="${namespace}__current-text"></div>
+            <div class="${namespace}__arrow"></div>
+        </div>
+        <div class="${namespace}__drop">
+            <div class="${namespace}__drop-inner">
+                <ul class="${namespace}__majors"></ul>
+                <input class="${namespace}__search" type="text" tabindex="-1" />
+                <ul class="${namespace}__minors"></ul>
+            </div>
+        </div>
+    </div>`,
 
     doTmpl: function(tmpl) {
-        var div = document.createElement('div');
+        let div = document.createElement('div');
         div.innerHTML = tmpl;
         return $(div.firstChild);
     },
 
     forEach: function(obj, callback, ctx) {
-        for (var i = 0, ilen = obj.length; i < ilen; i++)
+        for (let i = 0, ilen = obj.length; i < ilen; i++)
             if (callback.call(ctx, obj[i], i) === false) {
                 break;
             }
     },
 
     each: function(obj, callback, ctx) {
-        for (var i = 0, ilen = obj.length; i < ilen; i++)
+        for (let i = 0, ilen = obj.length; i < ilen; i++)
             if (callback.call(ctx, obj.eq(i), i) === false) {
                 break;
             }
     },
 
     toArray: function(nodeList) {
-        var arr = [];
+        let arr = [];
 
         Utils.forEach(nodeList, function(item, index) {
             arr.push(item);
@@ -52,25 +45,23 @@ var Utils = {
     },
 
     cacheObjects: function(el) {
-        var selectCtx = el,
-            chosenCtx = Utils.doTmpl(Utils.tmpl),
-            options = Utils.toArray(selectCtx.get(0).getElementsByTagName('OPTION')),
-            index = selectCtx.get(0).selectedIndex;
-
-        var select = {
+        let selectCtx = el;
+        let chosenCtx = Utils.doTmpl(Utils.tmpl);
+        let options = Utils.toArray(selectCtx.get(0).getElementsByTagName('OPTION'));
+        let index = selectCtx.get(0).selectedIndex;
+        let select = {
             ctx: selectCtx,
             options: options,
             selected: $(options[index >= 0 ? index : 0])
         };
-
-        var chosen = {
+        let chosen = {
             ctx: chosenCtx,
-            search: chosenCtx.find('.sindel__search'),
-            box: chosenCtx.find('.sindel__box'),
-            drop: chosenCtx.find('.sindel__drop'),
-            currentText: chosenCtx.find('.sindel__current-text'),
-            majorsList: chosenCtx.find('.sindel__majors'),
-            minorsList: chosenCtx.find('.sindel__minors'),
+            search: chosenCtx.find(`.${namespace}__search`),
+            box: chosenCtx.find(`.${namespace}__box`),
+            drop: chosenCtx.find(`.${namespace}__drop`),
+            currentText: chosenCtx.find(`.${namespace}__current-text`),
+            majorsList: chosenCtx.find(`.${namespace}__majors`),
+            minorsList: chosenCtx.find(`.${namespace}__minors`),
             newItems: $(),
             matches: $(),
             items: $(),
@@ -79,6 +70,7 @@ var Utils = {
         };
 
         chosenCtx.insertBefore(selectCtx[0]);
+        chosenCtx.append(selectCtx[0]);
 
         return {
             select: select,
@@ -87,10 +79,10 @@ var Utils = {
     },
 
     getListTmp: function(list, offset) {
-        var tmp = '';
+        let tmp = '';
 
         Utils.forEach(list, function(item, index) {
-            tmp += '<li class="sindel__item b-hidden" data-original-index="' + offset + '" data-index="' + offset + '">' + item.innerHTML + '</li>';
+            tmp += `<li class="${namespace}__item b-hidden" data-original-index="` + offset + '" data-index="' + offset + '">' + item.innerHTML + '</li>';
             offset++;
         });
 
@@ -98,7 +90,7 @@ var Utils = {
     },
 
     setParams: function(settings) {
-        var params = {
+        let params = {
             majorsCount: 0,
             minorsListOverflow: true,
             searchLimit: null

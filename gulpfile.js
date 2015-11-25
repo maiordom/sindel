@@ -25,7 +25,8 @@ gulp.task('replace', () => {
 
 gulp.task('server', () => {
     return connect.server({
-        port: 8089
+        port: 3001,
+        root: [__dirname]
     });
 });
 
@@ -34,7 +35,8 @@ gulp.task('babel', () => {
         .pipe(babel({
             presets: ['es2015']
         }))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest('./dist'))
+        .pipe(connect.reload());
 });
 
 gulp.task('stylus', () => {
@@ -46,6 +48,7 @@ gulp.task('stylus', () => {
             browsers: ['last 2 versions']
         }))
         .pipe(gulp.dest('./dist'))
+        .pipe(connect.reload());
 });
 
 gulp.task('watch', () => {
