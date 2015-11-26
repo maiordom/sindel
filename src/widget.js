@@ -1,3 +1,5 @@
+/* global namespace Utils */
+
 class Widget {
     constructor(el, settings) {
         this.init(el, settings);
@@ -57,7 +59,7 @@ class Widget {
     }
 
     selectInitialItem() {
-        let res, value;
+        let value;
 
         if (this.select.selected.length) {
             value = this.select.selected.html();
@@ -200,7 +202,7 @@ class Widget {
     onItemMouseover(e) {
         let item = $(e.target);
 
-        if (!item.hasClass(`${namespace}__item') || item.hasClass('b-hidden`)) {
+        if (!item.hasClass(`${namespace}__item`) || item.hasClass(`b-hidden`)) {
             return false;
         }
 
@@ -259,9 +261,11 @@ class Widget {
     getIndex(offset) {
         let item = this.getCurrentItem();
 
-        return item ?
-            parseInt(item.attr('data-index'), 10) :
-            parseInt(this.chosen.selected.attr('data-index'), 10) - 1;
+        if (item) {
+            return parseInt(item.attr('data-index'), 10);
+        }
+
+        return parseInt(this.chosen.selected.attr('data-index'), 10) - 1;
     }
 
     navigate(offset) {
@@ -295,7 +299,7 @@ class Widget {
         if (highBottom >= visibleBottom) {
             list.scrollTop = (highBottom - maxHeight) > 0 ? highBottom - maxHeight : 0;
         } else if (highTop < visibleTop) {
-            return list.scrollTop = highTop;
+            list.scrollTop = highTop;
         }
     }
 

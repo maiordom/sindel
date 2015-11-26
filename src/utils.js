@@ -1,3 +1,5 @@
+/* global namespace */
+
 const Utils = {
     tmpl:
     `<div class="${namespace} ${namespace}_active">
@@ -21,17 +23,19 @@ const Utils = {
     },
 
     forEach: function(obj, callback, ctx) {
-        for (let i = 0, ilen = obj.length; i < ilen; i++)
+        for (let i = 0, ilen = obj.length; i < ilen; i++) {
             if (callback.call(ctx, obj[i], i) === false) {
                 break;
             }
+        }
     },
 
     each: function(obj, callback, ctx) {
-        for (let i = 0, ilen = obj.length; i < ilen; i++)
+        for (let i = 0, ilen = obj.length; i < ilen; i++) {
             if (callback.call(ctx, obj.eq(i), i) === false) {
                 break;
             }
+        }
     },
 
     toArray: function(nodeList) {

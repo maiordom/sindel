@@ -8,6 +8,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     var namespace = 'sindel';
 
+    /* global namespace */
+
     var Utils = {
         tmpl: '<div class="' + namespace + ' ' + namespace + '_active">\n        <div class="' + namespace + '__box">\n            <div class="' + namespace + '__current-text"></div>\n            <div class="' + namespace + '__arrow"></div>\n        </div>\n        <div class="' + namespace + '__drop">\n            <div class="' + namespace + '__drop-inner">\n                <ul class="' + namespace + '__majors"></ul>\n                <input class="' + namespace + '__search" type="text" tabindex="-1" />\n                <ul class="' + namespace + '__minors"></ul>\n            </div>\n        </div>\n    </div>',
 
@@ -99,6 +101,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }
     };
 
+    /* global namespace Utils */
+
     var Widget = (function () {
         function Widget(el, settings) {
             _classCallCheck(this, Widget);
@@ -165,8 +169,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }, {
             key: 'selectInitialItem',
             value: function selectInitialItem() {
-                var res = void 0,
-                    value = void 0;
+                var value = void 0;
 
                 if (this.select.selected.length) {
                     value = this.select.selected.html();
@@ -324,7 +327,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             value: function onItemMouseover(e) {
                 var item = $(e.target);
 
-                if (!item.hasClass(namespace + '__item\') || item.hasClass(\'b-hidden')) {
+                if (!item.hasClass(namespace + '__item') || item.hasClass('b-hidden')) {
                     return false;
                 }
 
@@ -389,7 +392,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             value: function getIndex(offset) {
                 var item = this.getCurrentItem();
 
-                return item ? parseInt(item.attr('data-index'), 10) : parseInt(this.chosen.selected.attr('data-index'), 10) - 1;
+                if (item) {
+                    return parseInt(item.attr('data-index'), 10);
+                }
+
+                return parseInt(this.chosen.selected.attr('data-index'), 10) - 1;
             }
         }, {
             key: 'navigate',
@@ -425,7 +432,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 if (highBottom >= visibleBottom) {
                     list.scrollTop = highBottom - maxHeight > 0 ? highBottom - maxHeight : 0;
                 } else if (highTop < visibleTop) {
-                    return list.scrollTop = highTop;
+                    list.scrollTop = highTop;
                 }
             }
         }, {
