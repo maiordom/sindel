@@ -91,9 +91,6 @@
   list-style: none;
   position: relative;
 }
-.sindel__majors {
-  background: #fff;
-}
 .sindel_active .sindel__search {
   display: block;
 }
@@ -107,11 +104,11 @@
   font-family: Arial, sans-serif;
   border-radius: 2px;
 }
-.sindel__minors_overflow {
+.sindel__list_overflow {
   overflow-y: auto;
   max-height: 192px;
 }
-.sindel__minors {
+.sindel__list {
   background: #fff;
 }
 .sindel__item {

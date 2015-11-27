@@ -9,9 +9,8 @@ const Utils = {
         </div>
         <div class="${namespace}__drop">
             <div class="${namespace}__drop-inner">
-                <ul class="${namespace}__majors"></ul>
                 <input class="${namespace}__search" type="text" tabindex="-1" />
-                <ul class="${namespace}__minors"></ul>
+                <ul class="${namespace}__options"></ul>
             </div>
         </div>
     </div>`,
@@ -64,9 +63,7 @@ const Utils = {
             box: chosenCtx.find(`.${namespace}__box`),
             drop: chosenCtx.find(`.${namespace}__drop`),
             currentText: chosenCtx.find(`.${namespace}__current-text`),
-            majorsList: chosenCtx.find(`.${namespace}__majors`),
-            minorsList: chosenCtx.find(`.${namespace}__minors`),
-            newItems: $(),
+            list: chosenCtx.find(`.${namespace}__options`),
             matches: $(),
             items: $(),
             selected: $(),
@@ -95,9 +92,7 @@ const Utils = {
 
     setParams: function(settings) {
         let params = {
-            majorsCount: 0,
-            minorsListOverflow: true,
-            searchLimit: null
+            listOverflow: true
         };
 
         return $.extend(params, settings);

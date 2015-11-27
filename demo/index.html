@@ -119,17 +119,10 @@
     $(document).ready(function() {
         var city = $('.city');
 
-        city.eq(0).sindel({
-            majorsCount: 0
-        });
-
-        city.eq(1).sindel({
-            majorsCount: 4,
-            searchLimit: 5
-        });
-
+        city.eq(0).sindel();
+        city.eq(1).sindel();
         city.eq(2).sindel({
-            minorsListOverflow: false
+            listOverflow: false
         });
     });
 </script>

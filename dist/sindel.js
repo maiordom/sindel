@@ -11,7 +11,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /* global namespace */
 
     var Utils = {
-        tmpl: '<div class="' + namespace + ' ' + namespace + '_active">\n        <div class="' + namespace + '__box">\n            <div class="' + namespace + '__current-text"></div>\n            <div class="' + namespace + '__arrow"></div>\n        </div>\n        <div class="' + namespace + '__drop">\n            <div class="' + namespace + '__drop-inner">\n                <ul class="' + namespace + '__majors"></ul>\n                <input class="' + namespace + '__search" type="text" tabindex="-1" />\n                <ul class="' + namespace + '__minors"></ul>\n            </div>\n        </div>\n    </div>',
+        tmpl: '<div class="' + namespace + ' ' + namespace + '_active">\n        <div class="' + namespace + '__box">\n            <div class="' + namespace + '__current-text"></div>\n            <div class="' + namespace + '__arrow"></div>\n        </div>\n        <div class="' + namespace + '__drop">\n            <div class="' + namespace + '__drop-inner">\n                <input class="' + namespace + '__search" type="text" tabindex="-1" />\n                <ul class="' + namespace + '__options"></ul>\n            </div>\n        </div>\n    </div>',
 
         doTmpl: function doTmpl(tmpl) {
             var div = document.createElement('div');
@@ -61,9 +61,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 box: chosenCtx.find('.' + namespace + '__box'),
                 drop: chosenCtx.find('.' + namespace + '__drop'),
                 currentText: chosenCtx.find('.' + namespace + '__current-text'),
-                majorsList: chosenCtx.find('.' + namespace + '__majors'),
-                minorsList: chosenCtx.find('.' + namespace + '__minors'),
-                newItems: $(),
+                list: chosenCtx.find('.' + namespace + '__options'),
                 matches: $(),
                 items: $(),
                 selected: $(),
@@ -92,9 +90,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
         setParams: function setParams(settings) {
             var params = {
-                majorsCount: 0,
-                minorsListOverflow: true,
-                searchLimit: null
+                listOverflow: true
             };
 
             return $.extend(params, settings);
@@ -130,40 +126,23 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 this.chosen = nodes.chosen;
                 this.select = nodes.select;
 
-                this.render(this.replaceItems());
+                this.render();
                 this.selectInitialItem();
                 this.closeWidget();
                 this.bindEvents();
             }
         }, {
-            key: 'replaceItems',
-            value: function replaceItems() {
-                var majors = this.select.options.slice(0, this.params.majorsCount);
-                var minors = this.select.options.slice(this.params.majorsCount);
-
-                return {
-                    majors: majors,
-                    minors: minors
-                };
-            }
-        }, {
             key: 'render',
-            value: function render(data) {
-                this.chosen.majorsList.html(Utils.getListTmp(data.majors, 0));
-                this.chosen.minorsList.html(Utils.getListTmp(data.minors, data.majors.length));
-
+            value: function render() {
+                this.chosen.list.html(Utils.getListTmp(this.select.options, 0));
                 this.chosen.items = this.chosen.ctx.find('.' + namespace + '__item');
 
                 this.select.ctx.attr('tabindex', -1);
                 this.chosen.search.attr('placeholder', 'или введите другой');
                 this.select.ctx.addClass('b-hidden');
 
-                if (this.params.minorsListOverflow) {
-                    this.chosen.minorsList.addClass(namespace + '__minors_overflow');
-                }
-
-                if (!this.params.searchLimit) {
-                    this.params.searchLimit = data.minors.length;
+                if (this.params.listOverflow) {
+                    this.chosen.list.addClass(namespace + '__list_overflow');
                 }
             }
         }, {
@@ -205,7 +184,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 this.chosen.ctx.on('mouseout', this.onItemMouseout.bind(this));
                 this.chosen.ctx.on('mouseenter', this.onCtxMouseenter.bind(this));
                 this.chosen.ctx.on('mouseleave', this.onCtxMouseleave.bind(this));
-                this.chosen.ctx.on('click', this.onCtxClick.bind(this));
+                this.chosen.box.on('click', this.onBoxClick.bind(this));
                 this.chosen.ctx.on('click', this.onItemClick.bind(this));
                 this.chosen.box.on('mousedown', this.onBoxMousedown.bind(this));
                 this.chosen.box.on('focus', this.onBoxFocus.bind(this));
@@ -287,9 +266,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 return false;
             }
         }, {
-            key: 'onCtxClick',
-            value: function onCtxClick() {
-                this.displayDrop();
+            key: 'onBoxClick',
+            value: function onBoxClick(e) {
+                if (this.isOpen) {
+                    this.closeWidget();
+                } else {
+                    this.openWidget();
+                }
             }
         }, {
             key: 'onDocClick',
@@ -347,8 +330,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }, {
             key: 'findAndSelectMatches',
             value: function findAndSelectMatches() {
-                this.chosen.minorsList.get(0).scrollTop = 0;
-
+                this.chosen.list.get(0).scrollTop = 0;
                 this.chosen.search.val() ? this.findSearchMatches() : this.showItems();
 
                 if (this.chosen.matches.length) {
@@ -402,18 +384,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             key: 'navigate',
             value: function navigate(offset) {
                 var index = this.getIndex();
-                var new_index = index + offset;
-                var length = this.chosen.newItems.length;
+                var newIndex = index + offset;
+                var length = this.chosen.matches.length;
                 var item = void 0;
 
                 this.unselect();
 
-                if (new_index <= -1) {
-                    item = this.chosen.newItems.eq(length - 1).addClass(namespace + '__item_active');
-                } else if (new_index <= length - 1) {
-                    item = this.chosen.newItems.eq(new_index).addClass(namespace + '__item_active');
-                } else if (new_index >= length) {
-                    item = this.chosen.newItems.eq(0).addClass(namespace + '__item_active');
+                if (newIndex <= -1) {
+                    item = this.chosen.matches.eq(length - 1).addClass(namespace + '__item_active');
+                } else if (newIndex <= length - 1) {
+                    item = this.chosen.matches.eq(newIndex).addClass(namespace + '__item_active');
+                } else if (newIndex >= length) {
+                    item = this.chosen.matches.eq(0).addClass(namespace + '__item_active');
                 }
 
                 this.scrollTo(item.get(0));
@@ -422,7 +404,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }, {
             key: 'scrollTo',
             value: function scrollTo(item) {
-                var list = this.chosen.minorsList.get(0);
+                var list = this.chosen.list.get(0);
                 var maxHeight = list.offsetHeight;
                 var visibleTop = list.scrollTop;
                 var visibleBottom = maxHeight + visibleTop;
@@ -439,17 +421,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             key: 'findSearchMatches',
             value: function findSearchMatches() {
                 var value = this.chosen.search.val().toLocaleLowerCase();
-                var arr = this.chosen.items.slice(this.params.majorsCount);
-                var i = this.params.majorsCount;
+                var arr = this.chosen.items;
+                var i = 0;
                 var searchIndex = void 0;
                 var matches = [];
-
-                this.chosen.newItems = this.chosen.items.slice(0, this.params.majorsCount);
 
                 Utils.each(arr, function (item, index) {
                     searchIndex = item.html().toLowerCase().search(value);
 
-                    if (matches.length >= this.params.searchLimit || searchIndex === -1) {
+                    if (searchIndex === -1) {
                         item.removeAttr('data-index').addClass('b-hidden');
                     } else if (searchIndex >= 0) {
                         matches.push(item.get(0));
@@ -457,27 +437,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                     }
                 }, this);
 
-                this.chosen.matches = matches;
-                this.chosen.newItems = this.chosen.newItems.add(matches);
+                this.chosen.matches = $(matches);
             }
         }, {
             key: 'showItems',
             value: function showItems() {
                 Utils.each(this.chosen.items, function (item, index) {
-                    if (index < this.params.majorsCount + this.params.searchLimit) {
-                        item.removeClass('b-hidden').attr('data-index', index);
-                    } else {
-                        item.removeAttr('data-index').addClass('b-hidden');
-                    }
+                    item.removeClass('b-hidden').attr('data-index', index);
                 }, this);
 
-                this.chosen.newItems = this.chosen.items.slice(0, this.params.majorsCount + this.params.searchLimit);
-                this.chosen.matches = this.chosen.items.slice(this.params.majorsCount).get();
-            }
-        }, {
-            key: 'displayDrop',
-            value: function displayDrop() {
-                !this.isOpen ? this.openWidget() : this.closeWidget();
+                this.chosen.matches = this.chosen.items;
             }
         }, {
             key: 'openWidget',

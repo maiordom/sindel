@@ -23,38 +23,22 @@ class Widget {
         this.chosen = nodes.chosen;
         this.select = nodes.select;
 
-        this.render(this.replaceItems());
+        this.render();
         this.selectInitialItem();
         this.closeWidget();
         this.bindEvents();
     }
 
-    replaceItems() {
-        let majors = this.select.options.slice(0, this.params.majorsCount);
-        let minors = this.select.options.slice(this.params.majorsCount);
-
-        return {
-            majors: majors,
-            minors: minors
-        };
-    }
-
-    render(data) {
-        this.chosen.majorsList.html(Utils.getListTmp(data.majors, 0));
-        this.chosen.minorsList.html(Utils.getListTmp(data.minors, data.majors.length));
-
+    render() {
+        this.chosen.list.html(Utils.getListTmp(this.select.options, 0));
         this.chosen.items = this.chosen.ctx.find(`.${namespace}__item`);
 
         this.select.ctx.attr('tabindex', -1);
         this.chosen.search.attr('placeholder', 'или введите другой');
         this.select.ctx.addClass('b-hidden');
 
-        if (this.params.minorsListOverflow) {
-            this.chosen.minorsList.addClass(`${namespace}__minors_overflow`);
-        }
-
-        if (!this.params.searchLimit) {
-            this.params.searchLimit = data.minors.length;
+        if (this.params.listOverflow) {
+            this.chosen.list.addClass(`${namespace}__list_overflow`);
         }
     }
 
@@ -92,7 +76,7 @@ class Widget {
         this.chosen.ctx.on('mouseout', this.onItemMouseout.bind(this));
         this.chosen.ctx.on('mouseenter', this.onCtxMouseenter.bind(this));
         this.chosen.ctx.on('mouseleave', this.onCtxMouseleave.bind(this));
-        this.chosen.ctx.on('click', this.onCtxClick.bind(this));
+        this.chosen.box.on('click', this.onBoxClick.bind(this));
         this.chosen.ctx.on('click', this.onItemClick.bind(this));
         this.chosen.box.on('mousedown', this.onBoxMousedown.bind(this));
         this.chosen.box.on('focus', this.onBoxFocus.bind(this));
@@ -167,8 +151,12 @@ class Widget {
         return false;
     }
 
-    onCtxClick() {
-        this.displayDrop();
+    onBoxClick(e) {
+        if (this.isOpen) {
+            this.closeWidget();
+        } else {
+            this.openWidget();
+        }
     }
 
     onDocClick() {
@@ -220,8 +208,7 @@ class Widget {
     }
 
     findAndSelectMatches() {
-        this.chosen.minorsList.get(0).scrollTop = 0;
-
+        this.chosen.list.get(0).scrollTop = 0;
         this.chosen.search.val() ? this.findSearchMatches() : this.showItems();
 
         if (this.chosen.matches.length) {
@@ -270,18 +257,18 @@ class Widget {
 
     navigate(offset) {
         let index = this.getIndex();
-        let new_index = index + offset;
-        let length = this.chosen.newItems.length;
+        let newIndex = index + offset;
+        let length = this.chosen.matches.length;
         let item;
 
         this.unselect();
 
-        if (new_index <= -1) {
-            item = this.chosen.newItems.eq(length - 1).addClass(`${namespace}__item_active`);
-        } else if (new_index <= length - 1) {
-            item = this.chosen.newItems.eq(new_index).addClass(`${namespace}__item_active`);
-        } else if (new_index >= length) {
-            item = this.chosen.newItems.eq(0).addClass(`${namespace}__item_active`);
+        if (newIndex <= -1) {
+            item = this.chosen.matches.eq(length - 1).addClass(`${namespace}__item_active`);
+        } else if (newIndex <= length - 1) {
+            item = this.chosen.matches.eq(newIndex).addClass(`${namespace}__item_active`);
+        } else if (newIndex >= length) {
+            item = this.chosen.matches.eq(0).addClass(`${namespace}__item_active`);
         }
 
         this.scrollTo(item.get(0));
@@ -289,7 +276,7 @@ class Widget {
     }
 
     scrollTo(item) {
-        let list = this.chosen.minorsList.get(0);
+        let list = this.chosen.list.get(0);
         let maxHeight = list.offsetHeight;
         let visibleTop = list.scrollTop;
         let visibleBottom = maxHeight + visibleTop;
@@ -305,17 +292,15 @@ class Widget {
 
     findSearchMatches() {
         let value = this.chosen.search.val().toLocaleLowerCase();
-        let arr = this.chosen.items.slice(this.params.majorsCount);
-        let i = this.params.majorsCount;
+        let arr = this.chosen.items;
+        let i = 0;
         let searchIndex;
         let matches = [];
-
-        this.chosen.newItems = this.chosen.items.slice(0, this.params.majorsCount);
 
         Utils.each(arr, function(item, index) {
             searchIndex = item.html().toLowerCase().search(value);
 
-            if (matches.length >= this.params.searchLimit || searchIndex === -1) {
+            if (searchIndex === -1) {
                 item.removeAttr('data-index').addClass('b-hidden');
             } else if (searchIndex >= 0) {
                 matches.push(item.get(0));
@@ -323,25 +308,15 @@ class Widget {
             }
         }, this);
 
-        this.chosen.matches = matches;
-        this.chosen.newItems = this.chosen.newItems.add(matches);
+        this.chosen.matches = $(matches);
     }
 
     showItems() {
         Utils.each(this.chosen.items, function(item, index) {
-            if (index < this.params.majorsCount + this.params.searchLimit) {
-                item.removeClass('b-hidden').attr('data-index', index);
-            } else {
-                item.removeAttr('data-index').addClass('b-hidden');
-            }
+            item.removeClass('b-hidden').attr('data-index', index);
         }, this);
 
-        this.chosen.newItems = this.chosen.items.slice(0, this.params.majorsCount + this.params.searchLimit);
-        this.chosen.matches = this.chosen.items.slice(this.params.majorsCount).get();
-    }
-
-    displayDrop() {
-        !this.isOpen ? this.openWidget() : this.closeWidget();
+        this.chosen.matches = this.chosen.items;
     }
 
     openWidget() {
