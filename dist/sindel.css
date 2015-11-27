@@ -14,8 +14,8 @@
   margin: 0;
   padding: 0;
 }
-.sindel_focus .sindel__box {
-  border: 1px solid #fc0;
+.sindel:focus {
+  outline: none;
 }
 .sindel_pressed .sindel__box {
   background: #f6f5f3;
@@ -26,6 +26,9 @@
 }
 .sindel_hover .sindel__box {
   border: 1px solid #b8b8b8;
+}
+.sindel_focus .sindel__box {
+  border: 1px solid #fc0;
 }
 .sindel__box {
   position: relative;

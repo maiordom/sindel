@@ -2,14 +2,14 @@
 
 const Utils = {
     tmpl:
-    `<div class="${namespace} ${namespace}_active">
+    `<div class="${namespace} ${namespace}_active" tabindex="1">
         <div class="${namespace}__box">
             <div class="${namespace}__current-text"></div>
             <div class="${namespace}__arrow"></div>
         </div>
         <div class="${namespace}__drop">
             <div class="${namespace}__drop-inner">
-                <input class="${namespace}__search" type="text" tabindex="-1" />
+                <input class="${namespace}__search" type=и"text" tabindex="-1" />
                 <ul class="${namespace}__options"></ul>
             </div>
         </div>

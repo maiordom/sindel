@@ -11,7 +11,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /* global namespace */
 
     var Utils = {
-        tmpl: '<div class="' + namespace + ' ' + namespace + '_active">\n        <div class="' + namespace + '__box">\n            <div class="' + namespace + '__current-text"></div>\n            <div class="' + namespace + '__arrow"></div>\n        </div>\n        <div class="' + namespace + '__drop">\n            <div class="' + namespace + '__drop-inner">\n                <input class="' + namespace + '__search" type="text" tabindex="-1" />\n                <ul class="' + namespace + '__options"></ul>\n            </div>\n        </div>\n    </div>',
+        tmpl: '<div class="' + namespace + ' ' + namespace + '_active" tabindex="1">\n        <div class="' + namespace + '__box">\n            <div class="' + namespace + '__current-text"></div>\n            <div class="' + namespace + '__arrow"></div>\n        </div>\n        <div class="' + namespace + '__drop">\n            <div class="' + namespace + '__drop-inner">\n                <input class="' + namespace + '__search" type=и"text" tabindex="-1" />\n                <ul class="' + namespace + '__options"></ul>\n            </div>\n        </div>\n    </div>',
 
         doTmpl: function doTmpl(tmpl) {
             var div = document.createElement('div');
@@ -117,9 +117,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 this.doc = $(document);
                 this.isOpen = null;
                 this.isMouseleave = false;
-                this.params = {};
-                this.select = {};
-                this.chosen = {};
 
                 this.params = Utils.setParams(settings);
                 var nodes = Utils.cacheObjects(el);
@@ -187,13 +184,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 this.chosen.box.on('click', this.onBoxClick.bind(this));
                 this.chosen.ctx.on('click', this.onItemClick.bind(this));
                 this.chosen.box.on('mousedown', this.onBoxMousedown.bind(this));
-                this.chosen.box.on('focus', this.onBoxFocus.bind(this));
+                this.chosen.ctx.on('focus', this.onCtxFocus.bind(this));
+                this.chosen.ctx.on('focusout', this.onCtxFocusout.bind(this));
             }
         }, {
-            key: 'onBoxFocus',
-            value: function onBoxFocus() {
+            key: 'onCtxFocus',
+            value: function onCtxFocus() {
                 this.chosen.ctx.addClass(namespace + '_focus');
-                this.chosen.search.focus();
+            }
+        }, {
+            key: 'onCtxFocusout',
+            value: function onCtxFocusout() {
+                this.chosen.ctx.removeClass(namespace + '_focus');
             }
         }, {
             key: 'onCtxMouseenter',

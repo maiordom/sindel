@@ -14,9 +14,6 @@ class Widget {
         this.doc = $(document);
         this.isOpen = null;
         this.isMouseleave = false;
-        this.params = {};
-        this.select = {};
-        this.chosen = {};
 
         this.params = Utils.setParams(settings);
         let nodes = Utils.cacheObjects(el);
@@ -79,12 +76,16 @@ class Widget {
         this.chosen.box.on('click', this.onBoxClick.bind(this));
         this.chosen.ctx.on('click', this.onItemClick.bind(this));
         this.chosen.box.on('mousedown', this.onBoxMousedown.bind(this));
-        this.chosen.box.on('focus', this.onBoxFocus.bind(this));
+        this.chosen.ctx.on('focus', this.onCtxFocus.bind(this));
+        this.chosen.ctx.on('focusout', this.onCtxFocusout.bind(this));
     }
 
-    onBoxFocus() {
+    onCtxFocus() {
         this.chosen.ctx.addClass(`${namespace}_focus`);
-        this.chosen.search.focus();
+    }
+
+    onCtxFocusout() {
+        this.chosen.ctx.removeClass(`${namespace}_focus`);
     }
 
     onCtxMouseenter() {

@@ -13,9 +13,9 @@
     & *
         margin 0
         padding 0
-
-    &_focus &__box
-        border 1px solid #fc0
+        
+    &:focus
+        outline none
 
     &_pressed &__box
         background #f6f5f3
@@ -26,6 +26,9 @@
         
     &_hover &__box
         border 1px solid #b8b8b8
+        
+    &_focus &__box
+        border 1px solid #fc0
 
     &__box
         position relative
