@@ -40,6 +40,7 @@
   border-radius: 15px;
   height: 100%;
   box-sizing: border-box;
+  cursor: pointer;
 }
 .sindel__current-text {
   display: block;
@@ -48,7 +49,6 @@
   text-overflow: ellipsis;
   margin: 0 28px 0 13px;
   white-space: nowrap;
-  cursor: pointer;
 }
 .sindel_active .sindel__arrow {
   -webkit-transform: rotate(-180deg);
