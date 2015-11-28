@@ -8,10 +8,8 @@ const Utils = {
             <div class="${namespace}__arrow"></div>
         </div>
         <div class="${namespace}__drop">
-            <div class="${namespace}__drop-inner">
-                <input class="${namespace}__search" type=и"text" tabindex="-1" />
-                <ul class="${namespace}__options"></ul>
-            </div>
+            <input class="${namespace}__search" type=и"text" tabindex="-1" />
+            <ul class="${namespace}__options"></ul>
         </div>
     </div>`,
 

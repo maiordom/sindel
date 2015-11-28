@@ -41,6 +41,7 @@
   height: 100%;
   box-sizing: border-box;
   cursor: pointer;
+  background: #fff;
 }
 .sindel__current-text {
   display: block;
@@ -86,9 +87,8 @@
   left: -9999px;
   transition: left 0s 0.1s;
   opacity: 0;
-}
-.sindel__drop-inner {
   background: #fff;
+  padding-top: 6px;
 }
 .sindel__drop ul {
   list-style: none;
@@ -98,7 +98,7 @@
   display: block;
 }
 .sindel__search {
-  margin: 6px;
+  margin: 0 6px 6px 6px;
   height: 24px;
   padding: 0 3px;
   border: 1px solid #e0e0e0;

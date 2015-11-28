@@ -11,7 +11,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     /* global namespace */
 
     var Utils = {
-        tmpl: '<div class="' + namespace + ' ' + namespace + '_active" tabindex="1">\n        <div class="' + namespace + '__box">\n            <div class="' + namespace + '__current-text"></div>\n            <div class="' + namespace + '__arrow"></div>\n        </div>\n        <div class="' + namespace + '__drop">\n            <div class="' + namespace + '__drop-inner">\n                <input class="' + namespace + '__search" type=и"text" tabindex="-1" />\n                <ul class="' + namespace + '__options"></ul>\n            </div>\n        </div>\n    </div>',
+        tmpl: '<div class="' + namespace + ' ' + namespace + '_active" tabindex="1">\n        <div class="' + namespace + '__box">\n            <div class="' + namespace + '__current-text"></div>\n            <div class="' + namespace + '__arrow"></div>\n        </div>\n        <div class="' + namespace + '__drop">\n            <input class="' + namespace + '__search" type=и"text" tabindex="-1" />\n            <ul class="' + namespace + '__options"></ul>\n        </div>\n    </div>',
 
         doTmpl: function doTmpl(tmpl) {
             var div = document.createElement('div');
