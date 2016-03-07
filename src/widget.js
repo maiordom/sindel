@@ -191,7 +191,7 @@ class Widget {
     onItemMouseover(e) {
         let item = $(e.target);
 
-        if (!item.hasClass(`${namespace}__item`) || item.hasClass(`b-hidden`)) {
+        if (!item.hasClass(`${namespace}__item`) || item.hasClass('b-hidden')) {
             return false;
         }
 

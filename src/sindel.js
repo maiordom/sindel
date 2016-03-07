@@ -1,10 +1,10 @@
 'use strict';
 
-(function (root, $, undefined) {
+(function(root, $, undefined) { // eslint-disable-line
 
-const namespace = 'sindel';
+const namespace = 'sindel';  // eslint-disable-line
 
-@utils
-@widget
+// @utils
+// @widget
 
-})(window, jQuery, undefined);
+})(window, jQuery, undefined); // eslint-disable-line

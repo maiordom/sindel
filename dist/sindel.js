@@ -1,12 +1,13 @@
 'use strict';
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 (function (root, $, undefined) {
+    // eslint-disable-line
 
-    var namespace = 'sindel';
+    var namespace = 'sindel'; // eslint-disable-line
 
     /* global namespace */
 
@@ -18,7 +19,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             div.innerHTML = tmpl;
             return $(div.firstChild);
         },
-
         forEach: function forEach(obj, callback, ctx) {
             for (var i = 0, ilen = obj.length; i < ilen; i++) {
                 if (callback.call(ctx, obj[i], i) === false) {
@@ -26,7 +26,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 }
             }
         },
-
         each: function each(obj, callback, ctx) {
             for (var i = 0, ilen = obj.length; i < ilen; i++) {
                 if (callback.call(ctx, obj.eq(i), i) === false) {
@@ -34,17 +33,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 }
             }
         },
-
         toArray: function toArray(nodeList) {
             var arr = [];
 
-            Utils.forEach(nodeList, function (item, index) {
+            Utils.forEach(nodeList, function (item) {
                 arr.push(item);
             });
 
             return arr;
         },
-
         cacheObjects: function cacheObjects(el) {
             var selectCtx = el;
             var chosenCtx = Utils.doTmpl(Utils.tmpl);
@@ -76,18 +73,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
                 chosen: chosen
             };
         },
-
         getListTmp: function getListTmp(list, offset) {
             var tmp = '';
 
-            Utils.forEach(list, function (item, index) {
+            Utils.forEach(list, function (item) {
                 tmp += '<li class="' + namespace + '__item b-hidden" data-original-index="' + offset + '" data-index="' + offset + '">' + item.innerHTML + '</li>';
                 offset++;
             });
 
             return tmp;
         },
-
         setParams: function setParams(settings) {
             var params = {
                 listOverflow: true
@@ -99,7 +94,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     /* global namespace Utils */
 
-    var Widget = (function () {
+    var Widget = function () {
         function Widget(el, settings) {
             _classCallCheck(this, Widget);
 
@@ -489,7 +484,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }]);
 
         return Widget;
-    })();
+    }();
 
     ;
 
@@ -502,4 +497,4 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             }
         }, this);
     };
-})(window, jQuery, undefined);
+})(window, jQuery, undefined); // eslint-disable-line

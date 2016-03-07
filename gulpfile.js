@@ -18,8 +18,8 @@ const config = require('./package.json');
 
 gulp.task('replace', () => {
     return gulp.src(`./src/${config.name}.js`)
-        .pipe(replace('@utils', fs.readFileSync('./src/utils.js', 'utf8')))
-        .pipe(replace('@widget', fs.readFileSync('./src/widget.js', 'utf8')))
+        .pipe(replace('// @utils', fs.readFileSync('./src/utils.js', 'utf8')))
+        .pipe(replace('// @widget', fs.readFileSync('./src/widget.js', 'utf8')))
         .pipe(gulp.dest('./dist'));
 });
 

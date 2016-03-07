@@ -13,13 +13,13 @@ const Utils = {
         </div>
     </div>`,
 
-    doTmpl: function(tmpl) {
+    doTmpl(tmpl) {
         let div = document.createElement('div');
         div.innerHTML = tmpl;
         return $(div.firstChild);
     },
 
-    forEach: function(obj, callback, ctx) {
+    forEach(obj, callback, ctx) {
         for (let i = 0, ilen = obj.length; i < ilen; i++) {
             if (callback.call(ctx, obj[i], i) === false) {
                 break;
@@ -27,7 +27,7 @@ const Utils = {
         }
     },
 
-    each: function(obj, callback, ctx) {
+    each(obj, callback, ctx) {
         for (let i = 0, ilen = obj.length; i < ilen; i++) {
             if (callback.call(ctx, obj.eq(i), i) === false) {
                 break;
@@ -35,17 +35,17 @@ const Utils = {
         }
     },
 
-    toArray: function(nodeList) {
+    toArray(nodeList) {
         let arr = [];
 
-        Utils.forEach(nodeList, function(item, index) {
+        Utils.forEach(nodeList, item => {
             arr.push(item);
         });
 
         return arr;
     },
 
-    cacheObjects: function(el) {
+    cacheObjects(el) {
         let selectCtx = el;
         let chosenCtx = Utils.doTmpl(Utils.tmpl);
         let options = Utils.toArray(selectCtx.get(0).getElementsByTagName('OPTION'));
@@ -77,10 +77,10 @@ const Utils = {
         };
     },
 
-    getListTmp: function(list, offset) {
+    getListTmp(list, offset) {
         let tmp = '';
 
-        Utils.forEach(list, function(item, index) {
+        Utils.forEach(list, item => {
             tmp += `<li class="${namespace}__item b-hidden" data-original-index="` + offset + '" data-index="' + offset + '">' + item.innerHTML + '</li>';
             offset++;
         });
@@ -88,7 +88,7 @@ const Utils = {
         return tmp;
     },
 
-    setParams: function(settings) {
+    setParams(settings) {
         let params = {
             listOverflow: true
         };
