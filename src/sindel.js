@@ -4,7 +4,7 @@
 
 const namespace = 'sindel';  // eslint-disable-line
 
-// @utils
-// @widget
+// @@utils
+// @@widget
 
 })(window, jQuery, undefined); // eslint-disable-line

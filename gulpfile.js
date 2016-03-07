@@ -9,18 +9,19 @@ const stylus = require('gulp-stylus');
 const nib = require('nib');
 const uglify = require('gulp-uglify');
 const rename = require('gulp-rename');
-const minifyCss = require('gulp-minify-css');
+const cssNano = require('gulp-cssnano');
 const replace = require('gulp-replace');
 const runSequence = require('run-sequence');
+const concat = require('gulp-concat');
 const fs = require('fs');
 
-const config = require('./package.json');
+const config = require('./package.json').config;
 
 gulp.task('replace', () => {
-    return gulp.src(`./src/${config.name}.js`)
-        .pipe(replace('// @utils', fs.readFileSync('./src/utils.js', 'utf8')))
-        .pipe(replace('// @widget', fs.readFileSync('./src/widget.js', 'utf8')))
-        .pipe(gulp.dest('./dist'));
+    return gulp.src(`${config.jsPath}/${config.name}.js`)
+        .pipe(replace('// @@utils', fs.readFileSync(`${config.jsPath}/utils.js`, 'utf8')))
+        .pipe(replace('// @@widget', fs.readFileSync(`${config.jsPath}/widget.js`, 'utf8')))
+        .pipe(gulp.dest(config.dist));
 });
 
 gulp.task('server', () => {
@@ -30,53 +31,57 @@ gulp.task('server', () => {
     });
 });
 
+gulp.task('js', () => {
+    runSequence('replace', ['babel']);
+});
+
 gulp.task('babel', () => {
-    return gulp.src('./dist/*.js')
+    return gulp.src(`${config.dist}/*.js`)
         .pipe(babel({
             presets: ['es2015']
         }))
-        .pipe(gulp.dest('./dist'))
-        .pipe(connect.reload());
+        .on('error', function(err) {
+            console.log('error', err.toString());
+            this.emit('end');
+        })
+        .pipe(gulp.dest(config.dist));
 });
 
 gulp.task('stylus', () => {
-    return gulp.src('./src/*.styl')
+    return gulp.src(`${config.cssPath}/*.styl`)
         .pipe(stylus({
             use: [nib()]
         }))
         .pipe(autoprefixer({
             browsers: ['last 2 versions']
         }))
-        .pipe(gulp.dest('./dist'))
+        .pipe(concat(`${config.name}.css`))
+        .pipe(gulp.dest(config.dist))
         .pipe(connect.reload());
 });
 
-gulp.task('watch', () => {
-    watch('./src/*.js', () => {
-        runSequence('replace', ['babel']);
-    });
-
-    watch('./src/*.styl', () => {
-        runSequence('stylus');
-    });
-});
-
 gulp.task('min-js', () => {
-    return gulp.src(`./dist/${config.name}.js`)
+    return gulp.src(`${config.dist}/${config.name}.js`)
         .pipe(uglify())
         .pipe(rename(`${config.name}.min.js`))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest(config.dist));
 });
 
 gulp.task('min-css', () => {
-    return gulp.src(`./dist/${config.name}.css`)
-        .pipe(minifyCss())
+    return gulp.src(`${config.dist}/${config.name}.css`)
+        .pipe(cssNano())
         .pipe(rename(`${config.name}.min.css`))
-        .pipe(gulp.dest('./dist'));
+        .pipe(gulp.dest(config.dist));
 });
 
-gulp.task('js', () => {
-    return runSequence('replace', ['babel']);
+gulp.task('watch', () => {
+    watch(`${config.jsPath}/*.js`, () => {
+        runSequence('js');
+    });
+
+    watch(`${config.cssPath}/*.styl`, () => {
+        runSequence('stylus');
+    });
 });
 
 gulp.task('build', ['min-js', 'min-css']);
